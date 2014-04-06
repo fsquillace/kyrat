@@ -19,7 +19,7 @@ some of the `pearl` modules will be transfered automatically
 
 *ssh_pearl* is able to install/update the
 [*pearl framework*](https://github.com/fsquillace/pearl) from the remote host.
-It can do it by either git or wget depending if the git command
+It can do it by either `git` or `wget` depending if the `git` command
 is installed in the remote host.
 
 ## Installation ##
@@ -36,8 +36,9 @@ After installing `pearl` you can easily install `pearl-ssh` with the following c
     $ cd ~
     $ git clone https://github.com/fsquillace/pearl-ssh .pearl-ssh
 
-Then, write in your own `~/.bashrc` or in terminal the following:
-    $ source lib/ssh.sh
+Then, write in your own `~/.bashrc` or execute in terminal the following:
+
+    $ source ~/.pearl-ssh/lib/ssh.sh
 
 
 ## Quickstart ##
