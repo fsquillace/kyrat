@@ -36,7 +36,7 @@ inputrcScript=$(echo "$inputrcScript" | gzip | base64)
 
 CMD="PEARL_INSTALL=\$(mktemp -d pearl-XXXXX -p /tmp); echo \"${inputrcScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/inputrc; echo \"${commandScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/minipearl.sh; INPUTRC=\${PEARL_INSTALL}/inputrc bash --rcfile \${PEARL_INSTALL}/minipearl.sh -i; [ -d \${PEARL_INSTALL} ] && rm -rf \${PEARL_INSTALL}"
 
-ssh -2 -t $@ -- "$CMD"
+ssh -t $@ -- "$CMD"
 }
 
 
@@ -55,6 +55,6 @@ local commandScript=$(echo "$installScript" | gzip | base64)
 
 CMD="PEARL_INSTALL=\$(mktemp -d pearl-XXXXX -p /tmp); echo \"${commandScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/make.sh; bash \${PEARL_INSTALL}/make.sh; bash --rcfile \$HOME/.pearl/pearl -i; [ -d \${PEARL_INSTALL} ] && rm -rf \${PEARL_INSTALL}"
 
-ssh -2 -t $@ -- "$CMD"
+ssh -t $@ -- "$CMD"
 }
 
