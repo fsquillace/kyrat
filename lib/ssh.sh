@@ -2,7 +2,7 @@
 
 # Open a ssh session and transfer a minimal
 # version of pearl
-function ssh_mini_pearl(){
+function ssh_pearl(){
 [ -z $PEARL_HOME ] && PEARL_HOME=${HOME}/.config/pearl
 
 
@@ -48,7 +48,7 @@ ssh -t $@ -- "$CMD"
 
 # Open a ssh session and create a complete pearl
 # from either git or wget
-function ssh_pearl(){
+function ssh_pearl2(){
 local installScript=""
 if [ -d "$PEARL_ROOT" ];
 then

@@ -5,11 +5,11 @@ pearl-ssh
 pearl-ssh - Pearl module ssh wrappers
 
 ## Description ##
-pearl-ssh contains two main bash functions *ssh_pearl* and *ssh_mini_pearl*.
+pearl-ssh contains two main bash functions *ssh_pearl* and *ssh_pearl2*.
 They are both ssh wrappers that use the same ssh syntax and allow to transfer your favourite
 aliases, functions and variables to a remote host.
 
-*ssh_mini_pearl* transfers the content of a bash user-defined module
+*ssh_pearl* transfers the content of a bash user-defined module
 (`~/.config/pearl/pearlsshrc` or in the directory `~/.config/pearl/pearlsshrc.d/`)
 to the remote host and open a bash session
 using the transfered module.
@@ -18,8 +18,8 @@ Furthermore, if it is installed as module for
 some of the `pearl` modules will be transfered automatically
 (aliases.sh, options.sh, ops.sh, history.sh, ...).
 
-*ssh_pearl* is able to install/update the
-[*pearl framework*](https://github.com/fsquillace/pearl) from the remote host.
+*ssh_pearl2* is able to install/update the
+[*pearl framework*](https://github.com/fsquillace/pearl) to the remote host.
 It can do it by either `git` or `wget` depending if the `git` command
 is installed in the remote host.
 
@@ -57,7 +57,7 @@ Write in either `~/.config/pearl/pearlsshrc` or any files inside `~/.config/pear
 
 Now, just access to your remote host:
 
-    $> ssh_mini_pearl myuser@myserver.com
+    $> ssh_pearl myuser@myserver.com
     myserver.com $> processof feel
         feel     20567  0.3  0.0  14748   952 pts/5    S+   12:44   0:13 ping www.google.com
         feel     23458  0.0  0.0  12872  1372 pts/9    R+   13:49   0:00 ps -U feel -u feel u
