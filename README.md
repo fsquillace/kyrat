@@ -10,7 +10,8 @@ They are both ssh wrappers that use the same ssh syntax and allow to transfer yo
 aliases, functions and variables to a remote host.
 
 *ssh_mini_pearl* transfers the content of a bash user-defined module
-(`~/.config/pearl/pearlsshrc`) to the remote host and open a bash session
+(`~/.config/pearl/pearlsshrc` or in the directory `~/.config/pearl/pearlsshrc.d/`)
+to the remote host and open a bash session
 using the transfered module.
 Furthermore, if it is installed as module for
 [*pearl framework*](https://github.com/fsquillace/pearl),
@@ -43,7 +44,7 @@ Then, write in your own `~/.bashrc` or execute in terminal the following:
 
 ## Quickstart ##
 
-Write in `~/.config/pearl/pearlsshrc`:
+Write in either `~/.config/pearl/pearlsshrc` or any files inside `~/.config/pearl/pearlsshrc.d/`:
 
     alias q=exit
 

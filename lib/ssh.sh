@@ -4,8 +4,14 @@
 # version of pearl
 function ssh_mini_pearl(){
 [ -z $PEARL_HOME ] && PEARL_HOME=${HOME}/.config/pearl
+
+
 local homeScript=""
-[ -f $PEARL_HOME/pearlsshrc ] && homeScript=$(cat $PEARL_HOME/pearlsshrc)
+[ -f "$PEARL_HOME/pearlsshrc" ] && homeScript=$(cat "$PEARL_HOME/pearlsshrc")
+if [ -d "$PEARL_HOME/pearlsshrc.d" ]; then
+    homeScript="${homeScript}
+$(cat $PEARL_HOME/pearlsshrc.d/* 2> /dev/null)"
+fi
 
 local promptScript="export PS1='\[\033[31m\][\[\033[36m\]\h \[\033[34m\]\W \[\033[35m\]\$\[\033[31m\]]>\[\033[0m\] '"
 
