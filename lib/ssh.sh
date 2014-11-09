@@ -16,21 +16,20 @@ fi
 local promptScript="export PS1='\[\033[31m\][\[\033[36m\]\h \[\033[34m\]\W \[\033[35m\]\$\[\033[31m\]]>\[\033[0m\] '"
 
 local fromPearlScript=""
-local inputrcScript=""
-if [ -d "$PEARL_ROOT" ];
+if [ -e "$PEARL_ROOT/mods/pearl/utils/.git" ];
 then
-    local aliasesScript="$(cat $PEARL_ROOT/lib/aliases.sh)"
-    local bindingsScript="$(cat $PEARL_ROOT/lib/bindings.sh)"
-    local opsScript="$(cat $PEARL_ROOT/lib/ops.sh)"
-    local optionsScript="$(cat $PEARL_ROOT/lib/options.sh)"
-    local historyScript="$(cat $PEARL_ROOT/lib/history.sh)"
+    local aliasesScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/aliases.sh)"
+    local opsScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/ops.sh)"
+    local coreScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/core.sh)"
     fromPearlScript="${aliasesScript}
-${bindingsScript}
-${optionsScript}
-${opsScript}
-${historyScript}"
+${coreScript}
+${opsScript}"
+fi
 
-    inputrcScript="$(cat $PEARL_ROOT/etc/inputrc)"
+local inputrcScript=""
+if [ -e "$PEARL_ROOT/mods/pearl/dotfiles/.git" ];
+then
+    inputrcScript="$(cat $PEARL_ROOT/mods/pearl/dotfiles/etc/inputrc)"
 fi
 
 local commandScript="${fromPearlScript}
