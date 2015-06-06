@@ -1,41 +1,37 @@
 pearl-ssh
 =========
+pearl-ssh - Pearl module ssh wrapper
 
-## Name ##
-pearl-ssh - Pearl module ssh wrappers
-
-## Description ##
-pearl-ssh contains two main bash functions *ssh_pearl* and *ssh_pearl2*.
-They are both ssh wrappers that use the same ssh syntax and allow to transfer your favourite
-aliases, functions and variables to a remote host.
+Description
+===========
+pearl-ssh is a ssh wrapper (uses the same syntax) and allow to (magically)
+transfer your favourite aliases, functions and variables to a remote host.
 
 *ssh_pearl* transfers the content of a bash user-defined module
-(`~/.config/pearl/pearlsshrc` or in the directory `~/.config/pearl/pearlsshrc.d/`)
-to the remote host and open a bash session
-using the transfered module.
-Furthermore, if it is installed as module for
-[*pearl framework*](https://github.com/fsquillace/pearl),
-some of the `pearl` modules will be transfered automatically
-(aliases.sh, options.sh, ops.sh, history.sh, ...).
+(in `~/.config/pearl/sshrc` or in the directory `~/.config/pearl/sshrc.d/`)
+to the remote host and open a bash session based on the transferred modules.
 
-*ssh_pearl2* is able to install/update the
-[*pearl framework*](https://github.com/fsquillace/pearl) to the remote host.
-It can do it by either `git` or `wget` depending if the `git` command
-is installed in the remote host.
-
-## Installation ##
-
-### Option 1 (Recommended) ###
+Installation
+============
+## Method one (Recommended) ##
 `pearl-ssh` can be a module for the [*pearl framework*](https://github.com/fsquillace/pearl).
 After installing `pearl` you can easily install `pearl-ssh` with the following command:
 
-    $ pearl_module_install_update pearl-ssh
+    $ pearl module install pearl/ssh
 
-### Option 2 ###
+Furthermore, if you want to include the `pearl` utility aliases and functions
+inside pearl-ssh, just install the proper package:
+
+    $ pearl module install pearl/utils
+
+This means that some of the `pearl` modules will be transfered automatically
+(aliases.sh, ops.sh, ...).
+
+
+### Method two ###
 `pearl-ssh` can be used alone. Just type:
 
-    $ cd ~
-    $ git clone https://github.com/fsquillace/pearl-ssh .pearl-ssh
+    $ git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
 
 Then, write in your own `~/.bashrc` or execute in terminal the following:
 
@@ -44,7 +40,7 @@ Then, write in your own `~/.bashrc` or execute in terminal the following:
 
 ## Quickstart ##
 
-Write in either `~/.config/pearl/pearlsshrc` or any files inside `~/.config/pearl/pearlsshrc.d/`:
+Write in either `~/.config/pearl/sshrc` or any files inside `~/.config/pearl/sshrc.d/`:
 
     alias q=exit
 
@@ -66,13 +62,13 @@ Now, just access to your remote host:
     exit
 
 ## Help ##
-Just type:
+If you have installed `pearl-ssh` as a module for the [*pearl framework*](https://github.com/fsquillace/pearl), you can use the manual anytime typing the following command:
 
     man pearl.ssh
 
 ## Copyright ##
 
-    Copyright  (C) 2008-2014 Free  Software Foundation, Inc.
+    Copyright  (C) 2008-2015 Free  Software Foundation, Inc.
 
     Permission  is  granted to make and distribute verbatim copies
     of this document provided the copyright notice and  this  per‐

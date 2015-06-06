@@ -1,65 +1,40 @@
-
-
-# Open a ssh session and transfer a minimal
-# version of pearl
+#!/usr/bin/env bash
+#
+# This file is part of Pearl (https://github.com/fsquillace/pearl-ssh).
+#
+# Copyright (c) 2008-2015
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 function ssh_pearl(){
-[ -z $PEARL_HOME ] && PEARL_HOME=${HOME}/.config/pearl
+    [ -z $PEARL_HOME ] && PEARL_HOME=${HOME}/.config/pearl
 
+    local rcScript=""
+    [ -f "$PEARL_HOME/sshrc" ] && rcScript=$(cat "$PEARL_HOME/sshrc")
+    if [ -d "$PEARL_HOME/sshrc.d" ]; then
+        rcScript="${rcScript}
+    $(cat $PEARL_HOME/sshrc.d/* 2> /dev/null)"
+    fi
 
-local homeScript=""
-[ -f "$PEARL_HOME/pearlsshrc" ] && homeScript=$(cat "$PEARL_HOME/pearlsshrc")
-if [ -d "$PEARL_HOME/pearlsshrc.d" ]; then
-    homeScript="${homeScript}
-$(cat $PEARL_HOME/pearlsshrc.d/* 2> /dev/null)"
-fi
+    local inputrcScript=""
+    [ -f "$PEARL_HOME/sshinputrc" ] && inputrcScript=$(cat "$PEARL_HOME/sshinputrc")
 
-local promptScript="export PS1='\[\033[31m\][\[\033[36m\]\h \[\033[34m\]\W \[\033[35m\]\$\[\033[31m\]]>\[\033[0m\] '"
+    rcScript=$(echo "$rcScript" | gzip | base64)
+    inputrcScript=$(echo "$inputrcScript" | gzip | base64)
 
-local fromPearlScript=""
-if [ -e "$PEARL_ROOT/mods/pearl/utils/.git" ];
-then
-    local aliasesScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/aliases.sh)"
-    local opsScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/ops.sh)"
-    local coreScript="$(cat $PEARL_ROOT/mods/pearl/utils/lib/core.sh)"
-    fromPearlScript="${aliasesScript}
-${coreScript}
-${opsScript}"
-fi
+    CMD="PEARL_INSTALL=\$(mktemp -d pearl-XXXXX -p /tmp); echo \"${inputrcScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/inputrc; echo \"${rcScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/minipearl.sh; INPUTRC=\${PEARL_INSTALL}/inputrc bash --rcfile \${PEARL_INSTALL}/minipearl.sh -i; [ -d \${PEARL_INSTALL} ] && rm -rf \${PEARL_INSTALL}"
 
-local inputrcScript=""
-if [ -e "$PEARL_ROOT/mods/pearl/dotfiles/.git" ];
-then
-    inputrcScript="$(cat $PEARL_ROOT/mods/pearl/dotfiles/etc/inputrc)"
-fi
-
-local commandScript="${fromPearlScript}
-${promptScript}
-${homeScript}"
-
-commandScript=$(echo "$commandScript" | gzip | base64)
-inputrcScript=$(echo "$inputrcScript" | gzip | base64)
-
-CMD="PEARL_INSTALL=\$(mktemp -d pearl-XXXXX -p /tmp); echo \"${inputrcScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/inputrc; echo \"${commandScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/minipearl.sh; INPUTRC=\${PEARL_INSTALL}/inputrc bash --rcfile \${PEARL_INSTALL}/minipearl.sh -i; [ -d \${PEARL_INSTALL} ] && rm -rf \${PEARL_INSTALL}"
-
-ssh -t $@ -- "$CMD"
-}
-
-
-# Open a ssh session and create a complete pearl
-# from either git or wget
-function ssh_pearl2(){
-local installScript=""
-if [ -d "$PEARL_ROOT" ];
-then
-    installScript=$(cat ${PEARL_ROOT}/lib/make.sh)
-else
-    installScript=$(wget -q -O - https://raw.github.com/fsquillace/pearl/master/lib/make.sh)
-fi
-
-local commandScript=$(echo "$installScript" | gzip | base64)
-
-CMD="PEARL_INSTALL=\$(mktemp -d pearl-XXXXX -p /tmp); echo \"${commandScript}\" | base64 -di | gunzip > \${PEARL_INSTALL}/make.sh; bash \${PEARL_INSTALL}/make.sh; bash --rcfile \$HOME/.pearl/pearl -i; [ -d \${PEARL_INSTALL} ] && rm -rf \${PEARL_INSTALL}"
-
-ssh -t $@ -- "$CMD"
+    ssh -t $@ -- "$CMD"
 }
 
