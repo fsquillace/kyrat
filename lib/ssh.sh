@@ -29,6 +29,10 @@ function ssh_pearl(){
 
     local inputrcScript=""
     [ -f "$PEARL_HOME/sshinputrc" ] && inputrcScript=$(cat "$PEARL_HOME/sshinputrc")
+    if [ -d "$PEARL_HOME/sshinputrc.d" ]; then
+        inputrcScript="${inputrcScript}
+    $(cat $PEARL_HOME/sshinputrc.d/* 2> /dev/null)"
+    fi
 
     rcScript=$(echo "$rcScript" | gzip | base64)
     inputrcScript=$(echo "$inputrcScript" | gzip | base64)

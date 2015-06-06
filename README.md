@@ -11,6 +11,9 @@ transfer your favourite aliases, functions and variables to a remote host.
 (in `~/.config/pearl/sshrc` or in the directory `~/.config/pearl/sshrc.d/`)
 to the remote host and open a bash session based on the transferred modules.
 
+It is even possible to transfer an inputrc file located
+in `~/.config/pearl/sshinputrc` or inside the directory `~/.config/pearl/sshinputrc.d/`.
+
 Installation
 ============
 ## Method one (Recommended) ##
@@ -26,6 +29,11 @@ inside pearl-ssh, just install the proper package:
 
 This means that some of the `pearl` modules will be transfered automatically
 (aliases.sh, ops.sh, ...).
+
+If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles module:
+
+    $ pearl module install pearl/dotfiles
+    $ pearl-dotfiles enable inputrc
 
 
 ### Method two ###
