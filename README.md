@@ -1,6 +1,6 @@
 pearl-ssh
 =========
-pearl-ssh - Pearl module ssh wrapper
+pearl-ssh - Pearl module ssh wrapper to bring your config files always with you
 
 Description
 ===========
@@ -13,6 +13,30 @@ to the remote host and open a bash session based on the transferred modules.
 
 It is even possible to transfer an inputrc file located
 in `~/.config/pearl/sshinputrc` or inside the directory `~/.config/pearl/sshinputrc.d/`.
+
+
+## Quickstart ##
+
+Write in either `~/.config/pearl/sshrc` or any files inside `~/.config/pearl/sshrc.d/`:
+
+    alias q=exit
+
+    function processof(){
+        ps -U $1 -u $1 u
+    }
+
+    export PATH=$PATH:/sbin:/usr/sbin
+
+
+Now, just access to your remote host:
+
+    $> ssh_pearl myuser@myserver.com
+    myserver.com $> processof feel
+        feel     20567  0.3  0.0  14748   952 pts/5    S+   12:44   0:13 ping www.google.com
+        feel     23458  0.0  0.0  12872  1372 pts/9    R+   13:49   0:00 ps -U feel -u feel u
+
+    myserver.com $> q
+    exit
 
 Installation
 ============
@@ -43,31 +67,7 @@ If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles 
 
 Then, write in your own `~/.bashrc` or execute in terminal the following:
 
-    $ source ~/.pearl-ssh/lib/ssh.sh
-
-
-## Quickstart ##
-
-Write in either `~/.config/pearl/sshrc` or any files inside `~/.config/pearl/sshrc.d/`:
-
-    alias q=exit
-
-    function processof(){
-        ps -U $1 -u $1 u
-    }
-
-    export PATH=$PATH:/sbin:/usr/sbin
-
-
-Now, just access to your remote host:
-
-    $> ssh_pearl myuser@myserver.com
-    myserver.com $> processof feel
-        feel     20567  0.3  0.0  14748   952 pts/5    S+   12:44   0:13 ping www.google.com
-        feel     23458  0.0  0.0  12872  1372 pts/9    R+   13:49   0:00 ps -U feel -u feel u
-
-    myserver.com $> q
-    exit
+    $ source ~/.pearl-ssh/lib/ssh_pearl.sh
 
 ## Help ##
 If you have installed `pearl-ssh` as a module for the [*pearl framework*](https://github.com/fsquillace/pearl), you can use the manual anytime typing the following command:
