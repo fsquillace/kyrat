@@ -22,28 +22,30 @@ function ssh_pearl(){
     function _aggregate_scripts(){
         local fileRc="$1"
         local dirRc="$2"
-        [ -f "${fileRc}" ] && cat "${fileRc}"
-        [ -d "${dirRc}" ] && cat ${dirRc}/*
+        [[ -f "${fileRc}" ]] && cat "${fileRc}"
+        [[ -d "${dirRc}" ]] && cat "${dirRc}"/*
     }
 
     command -v base64 >/dev/null 2>&1 || { echo >&2 "pearl-ssh requires base64 to be installed locally. Aborting."; return 1; }
     command -v gzip >/dev/null 2>&1 || { echo >&2 "pearl-ssh requires gzip to be installed locally. Aborting."; return 1; }
-    [ -z "$@" ] && { ssh; return $?; }
+    [[ -z "$@" ]] && { ssh; return $?; }
 
-    [ -z $PEARL_HOME ] && PEARL_HOME=${HOME}/.config/pearl
+    [[ -z "$PEARL_HOME" ]] && PEARL_HOME=${HOME}/.config/pearl
 
-    local rcScript=$(_aggregate_scripts "$PEARL_HOME/sshrc" "$PEARL_HOME/sshrc.d" | gzip | base64)
-    local inputrcScript=$(_aggregate_scripts "$PEARL_HOME/sshinputrc" "$PEARL_HOME/sshinputrc.d" | gzip | base64)
+    local rcScript="$(_aggregate_scripts "$PEARL_HOME/sshrc" "$PEARL_HOME/sshrc.d" | gzip | base64)"
+    local inputrcScript="$(_aggregate_scripts "$PEARL_HOME/sshinputrc" "$PEARL_HOME/sshinputrc.d" | gzip | base64)"
 
     CMD="
+        for tmpDir in /tmp \$HOME; do [[ -w \"\$tmpDir\" ]] && { foundTmpDir=\"\$tmpDir\"; break; } done
+        [[ -z \"\$foundTmpDir\" ]] && { echo >&2 \"couldn't find writable tempdirs on the server. Aborting.\"; exit 1; };
         command -v base64 >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires base64 to be installed on the server. Aborting.\"; exit 1; };
         command -v gunzip >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires gunzip to be installed on the server. Aborting.\"; exit 1; };
-        PEARLSSH_HOME=\$(mktemp -d pearl-XXXXX -p /tmp);
-        trap \"rm -rf \$PEARLSSH_HOME; exit\" 0;
-        echo \"${inputrcScript}\" | base64 -di | gunzip > \${PEARLSSH_HOME}/inputrc;
-        echo \"${rcScript}\" | base64 -di | gunzip > \${PEARLSSH_HOME}/pearlssh.sh;
-        INPUTRC=\${PEARLSSH_HOME}/inputrc bash --rcfile \${PEARLSSH_HOME}/pearlssh.sh -i;
-        [ -d \${PEARLSSH_HOME} ] && rm -rf \${PEARLSSH_HOME}
+        PEARLSSH_HOME=\"\$(mktemp -d pearl-XXXXX -p \"\$foundTmpDir\")\";
+        trap \"rm -rf \"\$PEARLSSH_HOME\"; exit\" EXIT HUP INT QUIT PIPE TERM;
+        echo \"${inputrcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/inputrc\";
+        echo \"${rcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/pearlssh.sh\";
+        INPUTRC=\"\${PEARLSSH_HOME}/inputrc\" bash --rcfile \"\${PEARLSSH_HOME}/pearlssh.sh\" -i;
+        [[ -d \"\${PEARLSSH_HOME}\" ]] && rm -rf \"\${PEARLSSH_HOME}\"
     "
 
     ssh -t "$@" -- "$CMD"
