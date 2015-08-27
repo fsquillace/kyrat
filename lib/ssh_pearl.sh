@@ -34,17 +34,19 @@ function ssh_pearl(){
 
     local rcScript="$(_aggregate_scripts "$PEARL_HOME/sshrc" "$PEARL_HOME/sshrc.d" | gzip | base64)"
     local inputrcScript="$(_aggregate_scripts "$PEARL_HOME/sshinputrc" "$PEARL_HOME/sshinputrc.d" | gzip | base64)"
+    local vimrcScript="$(_aggregate_scripts "$PEARL_HOME/sshvimrc" "$PEARL_HOME/sshvimrc.d" | gzip | base64)"
 
     CMD="
-        for tmpDir in /tmp \$HOME; do [[ -w \"\$tmpDir\" ]] && { foundTmpDir=\"\$tmpDir\"; break; } done
-        [[ -z \"\$foundTmpDir\" ]] && { echo >&2 \"couldn't find writable tempdirs on the server. Aborting.\"; exit 1; };
+        for tmpDir in /tmp \$HOME; do [[ -w \"\$tmpDir\" ]] && { foundTmpDir=\"\$tmpDir\"; break; } done;
+        [[ -z \"\$foundTmpDir\" ]] && { echo >&2 \"Could not find writable tempdirs on the server. Aborting.\"; exit 1; };
         command -v base64 >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires base64 to be installed on the server. Aborting.\"; exit 1; };
         command -v gunzip >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires gunzip to be installed on the server. Aborting.\"; exit 1; };
         PEARLSSH_HOME=\"\$(mktemp -d pearl-XXXXX -p \"\$foundTmpDir\")\";
         trap \"rm -rf \"\$PEARLSSH_HOME\"; exit\" EXIT HUP INT QUIT PIPE TERM;
+        echo \"${rcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/bashrc\";
         echo \"${inputrcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/inputrc\";
-        echo \"${rcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/pearlssh.sh\";
-        INPUTRC=\"\${PEARLSSH_HOME}/inputrc\" bash --rcfile \"\${PEARLSSH_HOME}/pearlssh.sh\" -i;
+        echo \"${vimrcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/vimrc\";
+        VIMINIT=\"let \\\$MYVIMRC='\${PEARLSSH_HOME}/vimrc' | source \\\$MYVIMRC\" INPUTRC=\"\${PEARLSSH_HOME}/inputrc\" bash --rcfile \"\${PEARLSSH_HOME}/bashrc\" -i;
         [[ -d \"\${PEARLSSH_HOME}\" ]] && rm -rf \"\${PEARLSSH_HOME}\"
     "
 
