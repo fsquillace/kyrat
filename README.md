@@ -40,8 +40,18 @@ Now, just access to your remote host:
 
 Installation
 ============
-## Method one (Recommended) ##
-`pearl-ssh` can be a module for the [*pearl framework*](https://github.com/fsquillace/pearl).
+
+### Method one ###
+Just clone the repository:
+
+    $ git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
+
+Then, write in your own `~/.bashrc` or execute in terminal the following:
+
+    $ source ~/.pearl-ssh/lib/ssh_pearl.sh
+
+## Method two ##
+`pearl-ssh` is a module for the [*pearl framework*](https://github.com/fsquillace/pearl).
 After installing `pearl` you can easily install `pearl-ssh` with the following command:
 
     $ pearl module install pearl/ssh
@@ -58,16 +68,6 @@ If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles 
 
     $ pearl module install pearl/dotfiles
     $ pearl-dotfiles enable inputrc
-
-
-### Method two ###
-`pearl-ssh` can be used alone. Just type:
-
-    $ git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
-
-Then, write in your own `~/.bashrc` or execute in terminal the following:
-
-    $ source ~/.pearl-ssh/lib/ssh_pearl.sh
 
 ## Help ##
 If you have installed `pearl-ssh` as a module for the [*pearl framework*](https://github.com/fsquillace/pearl), you can use the manual anytime typing the following command:
