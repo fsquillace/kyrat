@@ -1,23 +1,28 @@
 pearl-ssh
 =========
-pearl-ssh - Pearl module ssh wrapper to bring your config files always with you
+pearl-ssh - An ssh wrapper script that brings your dotfiles always with you
 
 Description
 ===========
-pearl-ssh is a ssh wrapper (uses the same syntax) and allow to (magically)
-transfer your favourite aliases, functions and variables to a remote host.
+pearl-ssh is a ssh wrapper that allows to source local dotfiles
+on a ssh session in a remote host.
 
-*ssh_pearl* transfers the content of a bash user-defined module
-(in `~/.config/pearl/sshrc` or in the directory `~/.config/pearl/sshrc.d/`)
-to the remote host and open a bash session based on the transferred modules.
+*ssh_pearl* transfers the content of a **bash** user-defined module
+(located in either `~/.config/pearl/sshrc` or in the directory `~/.config/pearl/sshrc.d/`)
+to the remote host and open a bash session by sourcing the transferred modules.
 
-It is even possible to transfer an inputrc file located
-in `~/.config/pearl/sshinputrc` or inside the directory `~/.config/pearl/sshinputrc.d/`.
+Similarly, *ssh_pearl* can transfer **inputrc** files (located
+in either `~/.config/pearl/sshinputrc` or
+inside the directory `~/.config/pearl/sshinputrc.d/`)
+and **vimrc** files (located in either `~/.config/pearl/sshvimrc` or inside
+the directory `~/.config/pearl/sshvimrc.d/`).
 
 
-## Quickstart ##
+Quickstart
+==========
 
-Write in either `~/.config/pearl/sshrc` or any files inside `~/.config/pearl/sshrc.d/`:
+### Bash ###
+Write locally in either `~/.config/pearl/sshrc` or any files inside `~/.config/pearl/sshrc.d/`:
 
     alias q=exit
 
@@ -38,6 +43,21 @@ Now, just access to your remote host:
     myserver.com $> q
     exit
 
+### Vim ###
+Write locally in either `~/.config/pearl/sshvimrc` or any files inside `~/.config/pearl/sshvimrc.d/`:
+
+    nnoremap <silent> <Leader>e :Explore<CR>
+
+Now, just access to your remote host via `ssh_pearl`, run vim and you will have the shortcut `\e` for running the vim file explorer.
+
+### Inputrc ###
+Write locally in either `~/.config/pearl/sshinputrc` or any files inside `~/.config/pearl/sshinputrc.d/`:
+
+    set completion-ignore-case On
+
+Now, just access to your remote host via `ssh_pearl` and the terminal will have case insensitive tab completion.
+
+
 Installation
 ============
 
@@ -46,12 +66,12 @@ Just clone the repository:
 
     $ git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
 
-Then, write in your own `~/.bashrc` or execute in terminal the following:
+Then, either write in your own `~/.bashrc` or execute in terminal the following:
 
     $ source ~/.pearl-ssh/lib/ssh_pearl.sh
 
 ## Method two ##
-`pearl-ssh` is a module for the [*pearl framework*](https://github.com/fsquillace/pearl).
+`pearl-ssh` can be even installed as a module from the [*pearl framework*](https://github.com/fsquillace/pearl).
 After installing `pearl` you can easily install `pearl-ssh` with the following command:
 
     $ pearl module install pearl/ssh
@@ -64,7 +84,7 @@ inside pearl-ssh, just install the proper package:
 This means that some of the `pearl` modules will be transfered automatically
 (aliases.sh, ops.sh, ...).
 
-If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles module:
+Also, If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles module:
 
     $ pearl module install pearl/dotfiles
     $ pearl-dotfiles enable inputrc
@@ -102,8 +122,9 @@ this unexpected behaviors.
 Filippo Squillace <feel.squally@gmail.com>.
 
 ## WWW ##
-https://github.com/fsquillace/pearl
-https://github.com/fsquillace/pearl-ssh
+
+- https://github.com/fsquillace/pearl
+- https://github.com/fsquillace/pearl-ssh
 
 ## Last words ##
 
