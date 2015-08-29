@@ -64,30 +64,31 @@ Installation
 ### Method one ###
 Just clone the repository:
 
-    $ git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
+    git clone https://github.com/fsquillace/pearl-ssh ~/.pearl-ssh
 
 Then, either write in your own `~/.bashrc` or execute in terminal the following:
 
-    $ source ~/.pearl-ssh/lib/ssh_pearl.sh
+    source ~/.pearl-ssh/lib/ssh_pearl.sh
 
 ## Method two ##
 `pearl-ssh` can be even installed as a module from the [*pearl framework*](https://github.com/fsquillace/pearl).
 After installing `pearl` you can easily install `pearl-ssh` with the following command:
 
-    $ pearl module install pearl/ssh
+    pearl module install pearl/ssh
 
 Furthermore, if you want to include the `pearl` utility aliases and functions
 inside pearl-ssh, just install the proper package:
 
-    $ pearl module install pearl/utils
+    pearl module install pearl/utils
 
 This means that some of the `pearl` modules will be transfered automatically
 (aliases.sh, ops.sh, ...).
 
-Also, If you want to use the handy `pearl` inputrc, enable it in the `pearl` dotfiles module:
+Also, If you want to use the handy `pearl` inputrc and vimrc, enable them in the `pearl` dotfiles module:
 
-    $ pearl module install pearl/dotfiles
-    $ pearl-dotfiles enable inputrc
+    pearl module install pearl/dotfiles
+    pearl-dotfiles enable inputrc
+    pearl-dotfiles enable vimrc
 
 ## Help ##
 If you have installed `pearl-ssh` as a module for the [*pearl framework*](https://github.com/fsquillace/pearl), you can use the manual anytime typing the following command:
@@ -119,7 +120,7 @@ Go to 'https://github.com/fsquillace/pearl-ssh/issues' you can report directly
 this unexpected behaviors.
 
 ## Authors ##
-Filippo Squillace <feel.squally@gmail.com>.
+Filippo Squillace <feel.sqoox@gmail.com>.
 
 ## WWW ##
 
