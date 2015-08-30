@@ -1,12 +1,11 @@
 language: bash
 
 install:
-    - source lib/ssh_pearl.sh
     - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
     - mkdir -p ~/.config/pearl
     - echo "alias q='exit'" > ~/.config/pearl/sshrc
 
 script:
-    - ssh_pearl -o "StrictHostKeyChecking no" localhost -- q
-    - ssh_pearl -o "StrictHostKeyChecking no" localhost -- ls -lh
+    - ./bin/ssh-pearl -v -o "StrictHostKeyChecking no" localhost -- q
+    - ./bin/ssh-pearl -v -o "StrictHostKeyChecking no" localhost -- ls -lh

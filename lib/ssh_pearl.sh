@@ -29,9 +29,9 @@ function ssh_pearl(){
 
     local ssh_opts=()
     for opt in "$@"; do
-        case "$1" in
+        case "$opt" in
             --) shift ; break ;;
-            *) ssh_opts+=("$1") ; shift ;;
+            *) ssh_opts+=("$opt") ; shift ;;
         esac
     done
 

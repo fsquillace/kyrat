@@ -2,16 +2,19 @@ pearl-ssh
 =========
 pearl-ssh - An ssh wrapper script that brings your dotfiles always with you
 
+[![Build status](https://api.travis-ci.org/fsquillace/pearl-ssh.png?branch=master)](https://travis-ci.org/fsquillace/pearl-ssh)
+[![Join the gitter chat at https://gitter.im/fsquillace/pearl-ssh](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fsquillace/pearl-ssh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Description
 ===========
 pearl-ssh is a ssh wrapper that allows to source local dotfiles
 on a ssh session in a remote host.
 
-*ssh_pearl* transfers the content of a **bash** user-defined module
+*ssh-pearl* transfers the content of a **bash** user-defined module
 (located in either `~/.config/pearl/sshrc` or in the directory `~/.config/pearl/sshrc.d/`)
 to the remote host and open a bash session by sourcing the transferred modules.
 
-Similarly, *ssh_pearl* can transfer **inputrc** files (located
+Similarly, *ssh-pearl* can transfer **inputrc** files (located
 in either `~/.config/pearl/sshinputrc` or
 inside the directory `~/.config/pearl/sshinputrc.d/`)
 and **vimrc** files (located in either `~/.config/pearl/sshvimrc` or inside
@@ -35,7 +38,7 @@ Write locally in either `~/.config/pearl/sshrc` or any files inside `~/.config/p
 
 Now, just access to your remote host:
 
-    $> ssh_pearl myuser@myserver.com
+    $> ssh-pearl myuser@myserver.com
     myserver.com $> processof feel
         feel     20567  0.3  0.0  14748   952 pts/5    S+   12:44   0:13 ping www.google.com
         feel     23458  0.0  0.0  12872  1372 pts/9    R+   13:49   0:00 ps -U feel -u feel u
@@ -43,19 +46,23 @@ Now, just access to your remote host:
     myserver.com $> q
     exit
 
+Or even inline:
+
+    $> ssh-pearl myuser@myserver.com -- processorof feel
+
 ### Vim ###
 Write locally in either `~/.config/pearl/sshvimrc` or any files inside `~/.config/pearl/sshvimrc.d/`:
 
     nnoremap <silent> <Leader>e :Explore<CR>
 
-Now, just access to your remote host via `ssh_pearl`, run vim and you will have the shortcut `\e` for running the vim file explorer.
+Now, just access to your remote host via `ssh-pearl`, run vim and you will have the shortcut `\e` for running the vim file explorer.
 
 ### Inputrc ###
 Write locally in either `~/.config/pearl/sshinputrc` or any files inside `~/.config/pearl/sshinputrc.d/`:
 
     set completion-ignore-case On
 
-Now, just access to your remote host via `ssh_pearl` and the terminal will have case insensitive tab completion.
+Now, just access to your remote host via `ssh-pearl` and the terminal will have case insensitive tab completion.
 
 
 Installation
@@ -68,7 +75,7 @@ Just clone the repository:
 
 Then, either write in your own `~/.bashrc` or execute in terminal the following:
 
-    source ~/.pearl-ssh/lib/ssh_pearl.sh
+    export PATH=$PATH:~/.pearl-ssh/bin
 
 ## Method two ##
 `pearl-ssh` can be even installed as a module from the [*pearl framework*](https://github.com/fsquillace/pearl).
