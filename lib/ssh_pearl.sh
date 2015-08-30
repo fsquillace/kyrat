@@ -25,10 +25,23 @@ function ssh_pearl(){
         [[ -f "${fileRc}" ]] && cat "${fileRc}"
         [[ -d "${dirRc}" ]] && cat "${dirRc}"/*
     }
+    [[ -z "$@" ]] && { ssh; return $?; }
+
+    local ssh_opts=()
+    for opt in "$@"; do
+        case "$1" in
+                --) shift ; break ;;
+                *) ssh_opts+=("$1") ; shift ;;
+        esac
+    done
+
+    local commands=()
+    for arg in "$@"; do commands+=("$arg"); done
+    local commands_opt=""
+    [[ -z "${commands[@]}" ]] || commands_opt="-c '${commands[@]}'"
 
     command -v base64 >/dev/null 2>&1 || { echo >&2 "pearl-ssh requires base64 to be installed locally. Aborting."; return 1; }
     command -v gzip >/dev/null 2>&1 || { echo >&2 "pearl-ssh requires gzip to be installed locally. Aborting."; return 1; }
-    [[ -z "$@" ]] && { ssh; return $?; }
 
     [[ -z "$PEARL_HOME" ]] && PEARL_HOME=${HOME}/.config/pearl
 
@@ -42,13 +55,12 @@ function ssh_pearl(){
         command -v base64 >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires base64 to be installed on the server. Aborting.\"; exit 1; };
         command -v gunzip >/dev/null 2>&1 || { echo >&2 \"pearl-ssh requires gunzip to be installed on the server. Aborting.\"; exit 1; };
         PEARLSSH_HOME=\"\$(mktemp -d pearl-XXXXX -p \"\$foundTmpDir\")\";
-        trap \"rm -rf \"\$PEARLSSH_HOME\"; exit\" EXIT HUP INT QUIT PIPE TERM;
+        trap \"rm -rf \"\$PEARLSSH_HOME\"; exit\" EXIT HUP INT QUIT PIPE TERM KILL;
         echo \"${rcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/bashrc\";
         echo \"${inputrcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/inputrc\";
         echo \"${vimrcScript}\" | base64 -di | gunzip > \"\${PEARLSSH_HOME}/vimrc\";
-        VIMINIT=\"let \\\$MYVIMRC='\${PEARLSSH_HOME}/vimrc' | source \\\$MYVIMRC\" INPUTRC=\"\${PEARLSSH_HOME}/inputrc\" bash --rcfile \"\${PEARLSSH_HOME}/bashrc\" -i;
-        [[ -d \"\${PEARLSSH_HOME}\" ]] && rm -rf \"\${PEARLSSH_HOME}\"
+        VIMINIT=\"let \\\$MYVIMRC='\${PEARLSSH_HOME}/vimrc' | source \\\$MYVIMRC\" INPUTRC=\"\${PEARLSSH_HOME}/inputrc\" bash --rcfile \"\${PEARLSSH_HOME}/bashrc\" -i ${commands_opt};
     "
 
-    ssh -t "$@" -- "$CMD"
+    ssh -t "${ssh_opts[@]}" -- "$CMD"
 }
