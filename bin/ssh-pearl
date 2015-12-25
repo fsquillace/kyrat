@@ -18,6 +18,35 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-source "$(dirname $0)/../lib/ssh_pearl.sh"
+SELF="$(basename "$0")"
+LIBNAME='ssh_pearl.sh'
 
-ssh_pearl "$@"
+
+# Resolves the real (non-linked) location of the node.
+#
+# @param   {string}  node      full path to the file whose real location we're after.
+#
+# @returns {string}  full path to the node's real location (minus node name).
+function resolve_real_path() {
+    local src dir
+
+    src="$1"
+
+    [[ "$#" -ne 1 ]]   && { echo -e "exactly 1 arg (node location) required. abort." "$FUNCNAME"; return 1; }
+    [[ -z "$src" ]] && { echo -e "node argument has to be a non-empty string." "$FUNCNAME"; return 1; }
+    [[ -e "$src" ]] || { echo -e "node argument has to be an existing file." "$FUNCNAME"; return 1; }
+
+    while [[ -h "$src" ]]; do  # resolve $src until the file is no longer a symlink
+        src="$(readlink -- "$src")"
+        if [[ "$src" != /* ]]; then
+            dir="$(cd -P -- "$(dirname -- "$src")" && pwd)"
+            src="$dir/$src"  # if $src was a relative symlink, we need to resolve it relative to the path where the symlink was located.
+        fi
+    done
+
+    echo "$(cd -P -- "$(dirname -- "$src")" && pwd)"
+}
+
+source "$(resolve_real_path "$0")/../lib/$LIBNAME" || exit 1
+
+ssh_pearl __SCRIPT_INVOCATION__ "$@"

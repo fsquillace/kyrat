@@ -4,7 +4,7 @@ install:
     - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
     - mkdir -p ~/.config/pearl
-    - echo "alias q='exit'" > ~/.config/pearl/sshrc
+    - echo "alias q='exit'" > ~/.config/pearl/bashrc
 
 script:
     - ./bin/ssh-pearl -v -o "StrictHostKeyChecking no" localhost -- q
