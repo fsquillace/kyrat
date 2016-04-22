@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This file is part of Pearl (https://github.com/fsquillace/pearl-ssh).
+# This file is part of Kyrat (https://github.com/fsquillace/kyrat).
 #
 # Copyright (c) 2008-2015
 #
@@ -18,6 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-source "$(dirname $0)/../lib/ssh_pearl.sh"
+source "$(dirname $0)/../lib/kyrat.sh"
 
-ssh_pearl "$@"
+kyrat "$@"

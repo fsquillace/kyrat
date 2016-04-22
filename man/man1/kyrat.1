@@ -1,0 +1,171 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "README" "" "April 2016" "Filippo Squillace" "kyrat"
+Kyrat \- An ssh wrapper script that brings your dotfiles always with you
+.
+.P
+ \fIhttps://travis\-ci\.org/fsquillace/kyrat\fR  \fIhttps://gitter\.im/fsquillace/kyrat?utm_source=badge&utm_medium=badge&utm_campaign=pr\-badge&utm_content=badge\fRkyrat is a ssh wrapper that allows to source local dotfiles on a ssh session in a remote host\.
+.
+.P
+\fIkyrat\fR transfers the content of a \fBbash\fR user\-defined module (located in either \fB~/\.config/kyrat/bash\fR or in the directory \fB~/\.config/kyrat/bashrc\.d/\fR) to the remote host and open a bash session by sourcing the transferred modules\.
+.
+.P
+Similarly, \fIkyrat\fR can transfer \fBinputrc\fR files (located in either \fB~/\.config/kyrat/inputrc\fR or inside the directory \fB~/\.config/kyrat/inputrc\.d/\fR) and \fBvimrc\fR files (located in either \fB~/\.config/kyrat/vimrc\fR or inside the directory \fB~/\.config/kyrat/vimrc\.d/\fR)\.
+.
+.SS "Bash"
+Write locally in either \fB~/\.config/kyrat/bashrc\fR or any files inside \fB~/\.config/kyrat/bashrc\.d/\fR:
+.
+.IP "" 4
+.
+.nf
+
+alias q=exit
+
+function processof(){
+    ps \-U $1 \-u $1 u
+}
+
+export PATH=$PATH:/sbin:/usr/sbin
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Now, just access to your remote host:
+.
+.IP "" 4
+.
+.nf
+
+$> kyrat myuser@myserver\.com
+myserver\.com $> processof feel
+    feel     20567  0\.3  0\.0  14748   952 pts/5    S+   12:44   0:13 ping www\.google\.com
+    feel     23458  0\.0  0\.0  12872  1372 pts/9    R+   13:49   0:00 ps \-U feel \-u feel u
+
+myserver\.com $> q
+exit
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Or even inline:
+.
+.IP "" 4
+.
+.nf
+
+$> kyrat myuser@myserver\.com \-\- processorof feel
+.
+.fi
+.
+.IP "" 0
+.
+.SS "Vim"
+Write locally in either \fB~/\.config/kyrat/vimrc\fR or any files inside \fB~/\.config/kyrat/vimrc\.d/\fR:
+.
+.IP "" 4
+.
+.nf
+
+nnoremap <silent> <Leader>e :Explore<CR>
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Now, just access to your remote host via \fBkyrat\fR, run vim and you will have the shortcut \fB\ee\fR for running the vim file explorer\.
+.
+.SS "Inputrc"
+Write locally in either \fB~/\.config/kyrat/inputrc\fR or any files inside \fB~/\.config/kyrat/inputrc\.d/\fR:
+.
+.IP "" 4
+.
+.nf
+
+set completion\-ignore\-case On
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Now, just access to your remote host via \fBkyrat\fR and the terminal will have case insensitive tab completion\.
+.
+.SS "Method one"
+Just clone the repository:
+.
+.IP "" 4
+.
+.nf
+
+git clone https://github\.com/fsquillace/kyrat ~/\.local/share/kyrat
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Then, either write in your own \fB~/\.bashrc\fR or execute in terminal the following:
+.
+.IP "" 4
+.
+.nf
+
+export PATH=$PATH:~/\.local/share/kyrat/bin
+.
+.fi
+.
+.IP "" 0
+.
+.SH "Copyright"
+.
+.nf
+
+Copyright  (C) 2008\-2016 Free  Software Foundation, Inc\.
+
+Permission  is  granted to make and distribute verbatim copies
+of this document provided the copyright notice and  this  per‐
+mission notice are preserved on all copies\.
+
+Permission is granted to copy and distribute modified versions
+of this document under the conditions  for  verbatim  copying,
+provided that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this one\.
+
+Permission is granted to copy and distribute  translations  of
+this  document  into  another language, under the above condi‐
+tions for  modified  versions,  except  that  this  permission
+notice  may  be  stated  in a translation approved by the Free
+Software Foundation\.
+.
+.fi
+.
+.SH "Bugs"
+Of course there is no bug in kyrat, but there may be unexpected behaviors\. Go to \'https://github\.com/fsquillace/kyrat/issues\' you can report directly this unexpected behaviors\.
+.
+.SH "Authors"
+Filippo Squillace \fIfeel\.sqoox@gmail\.com\fR\.
+.
+.SH "WWW"
+.
+.IP "\(bu" 4
+https://github\.com/fsquillace/kyrat
+.
+.IP "" 0
+.
+.SH "Last words"
+.
+.nf
+
+Consider your origins:
+You were not born to live like brutes
+but to follow virtue and knowledge\.
+[verse, Dante Alighieri, from Divine Comedy]
+.
+.fi
+

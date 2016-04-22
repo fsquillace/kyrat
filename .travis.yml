@@ -3,9 +3,9 @@ language: bash
 install:
     - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-    - mkdir -p ~/.config/pearl
-    - echo "alias q='exit'" > ~/.config/pearl/sshrc
+    - mkdir -p ~/.config/kyrat
+    - echo "alias q='exit'" > ~/.config/kyrat/bashrc
 
 script:
-    - ./bin/ssh-pearl -v -o "StrictHostKeyChecking no" localhost -- q
-    - ./bin/ssh-pearl -v -o "StrictHostKeyChecking no" localhost -- ls -lh
+    - ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- q
+    - ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- ls -lh
