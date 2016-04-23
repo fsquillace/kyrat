@@ -5,7 +5,7 @@ function kyrat(){
         local fileRc="$1"
         local dirRc="$2"
         [[ -f "${fileRc}" ]] && cat "${fileRc}"
-        [[ -d "${dirRc}" ]] && cat "${dirRc}"/*
+        [[ -d "${dirRc}" ]] && [[ "$(ls -A ${dirRc})" ]] && cat "${dirRc}"/*
     }
     [[ -z "$@" ]] && { ssh; return $?; }
 
