@@ -1,11 +1,10 @@
 language: bash
 
 install:
-    - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
-    - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-    - mkdir -p ~/.config/kyrat
-    - echo "alias q='exit'" > ~/.config/kyrat/bashrc
+  - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
-    - ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- q
-    - ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- ls -lh
+  - ./tests/checkstyle/checkstyle.sh
+  - ./tests/unit-tests/unit-tests.sh
+  - ./tests/integ-tests/integ-tests.sh
