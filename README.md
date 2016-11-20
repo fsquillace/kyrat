@@ -2,8 +2,18 @@ kyrat
 =====
 Kyrat - An ssh wrapper script that brings your dotfiles always with you
 
-[![Build status](https://api.travis-ci.org/fsquillace/kyrat.png?branch=master)](https://travis-ci.org/fsquillace/kyrat)
-[![Join the gitter chat at https://gitter.im/fsquillace/kyrat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fsquillace/kyrat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+|Project Status|Communication|
+|:-----------:|:-----------:|
+|[![Build status](https://api.travis-ci.org/fsquillace/kyrat.png?branch=master)](https://travis-ci.org/fsquillace/kyrat) | [![Join the gitter chat at https://gitter.im/fsquillace/kyrat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fsquillace/kyrat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) |
+
+**Table of Contents**
+- [Description](#description)
+- [Quickstart](#quickstart)
+- [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [Last words](#last-words)
 
 Description
 ===========
@@ -67,49 +77,38 @@ Now, just access to your remote host via `kyrat` and the terminal will have case
 
 Installation
 ============
+Before installing Kyrat be sure that all dependencies are properly installed in your system.
+The Kyrat dependencies are the following:
 
-### Method one ###
-Just clone the repository:
+- [bash (>=4.0)](https://www.gnu.org/software/bash/)
+- [GNU coreutils](https://www.gnu.org/software/coreutils/)
 
+To install Kyrat, just clone the repository and update `PATH` variable:
+
+```sh
     git clone https://github.com/fsquillace/kyrat ~/.local/share/kyrat
-
-Then, either write in your own `~/.bashrc` or execute in terminal the following:
-
     export PATH=$PATH:~/.local/share/kyrat/bin
+```
 
-## Copyright ##
+Troubleshooting
+===============
+This section has been left blank intentionally.
+It will be filled up as soon as troubles come in!
 
-    Copyright  (C) 2008-2016 Free  Software Foundation, Inc.
+Contributing
+============
+You could help improving Kyrat in the following ways:
 
-    Permission  is  granted to make and distribute verbatim copies
-    of this document provided the copyright notice and  this  per‐
-    mission notice are preserved on all copies.
+- [Reporting Bugs](CONTRIBUTING.md#reporting-bugs)
+- [Suggesting Enhancements](CONTRIBUTING.md#suggesting-enhancements)
+- [Writing Code](CONTRIBUTING.md#your-first-code-contribution)
 
-    Permission is granted to copy and distribute modified versions
-    of this document under the conditions  for  verbatim  copying,
-    provided that the entire resulting derived work is distributed
-    under the terms of a permission notice identical to this one.
+Authors
+=======
+- Filippo Squillace <feel.sqoox@gmail.com>.
 
-    Permission is granted to copy and distribute  translations  of
-    this  document  into  another language, under the above condi‐
-    tions for  modified  versions,  except  that  this  permission
-    notice  may  be  stated  in a translation approved by the Free
-    Software Foundation.
-
-## Bugs ##
-Of course there is no bug in kyrat, but there may be unexpected behaviors.
-Go to 'https://github.com/fsquillace/kyrat/issues' you can report directly
-this unexpected behaviors.
-
-## Authors ##
-Filippo Squillace <feel.sqoox@gmail.com>.
-
-## WWW ##
-
-- https://github.com/fsquillace/kyrat
-
-## Last words ##
-
+Last words
+==========
     Consider your origins:
     You were not born to live like brutes
     but to follow virtue and knowledge.
