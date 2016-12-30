@@ -115,7 +115,7 @@ function _execute_ssh(){
     command -v $GZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GZIP to be installed locally. Aborting."; return $NOT_EXISTING_COMMAND; }
 
     local remote_command="$(_get_remote_command)"
-    $SSH -t "${SSH_OPTS[@]}" -- "$remote_command"
+    $SSH -t "${SSH_OPTS[@]}" -- "$BASH -c '$remote_command'"
 }
 
 #######################################
@@ -144,7 +144,7 @@ function _get_remote_command(){
     local vimrc_script="$(_concatenate_files "$KYRAT_HOME"/vimrc "$KYRAT_HOME"/vimrc.d/* | $GZIP | $BASE64)"
 
     local commands_opt=""
-    [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c '${COMMANDS[@]}'"
+    [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
     local cmd="
         for tmp_dir in ${BASE_DIRS[@]}; do [[ -w \"\$tmp_dir\" ]] && { base_dir=\"\$tmp_dir\"; break; } done;
         [[ -z \"\$base_dir\" ]] && { echo >&2 \"Could not find writable temp directory on the remote host. Aborting.\"; exit $NO_WRITABLE_DIRECTORY; };
@@ -155,7 +155,7 @@ function _get_remote_command(){
         echo \"${rc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/bashrc\";
         echo \"${inputrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/inputrc\";
         echo \"${vimrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/vimrc\";
-        VIMINIT=\"let \\\$MYVIMRC='\${kyrat_home}/vimrc' | source \\\$MYVIMRC\" INPUTRC=\"\${kyrat_home}/inputrc\" $BASH --rcfile \"\${kyrat_home}/bashrc\" -i ${commands_opt};
+        VIMINIT=\"let \\\$MYVIMRC=\\\"\${kyrat_home}/vimrc\\\" | source \\\$MYVIMRC\" INPUTRC=\"\${kyrat_home}/inputrc\" $BASH --rcfile \"\${kyrat_home}/bashrc\" -i ${commands_opt};
     "
     echo "$cmd"
 }
