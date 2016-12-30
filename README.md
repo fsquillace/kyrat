@@ -9,6 +9,7 @@ Kyrat - An ssh wrapper script that brings your dotfiles always with you on Linux
 **Table of Contents**
 - [Description](#description)
 - [Quickstart](#quickstart)
+- [Comparison with sshrc](#comparison-with-sshrc)
 - [Installation](#installation)
   - [Dependencies](#dependencies)
   - [Linux](#linux)
@@ -24,7 +25,7 @@ kyrat is a ssh wrapper that allows to source local dotfiles
 on a ssh session to a remote host. It works either from/to a Linux or OSX machine.
 
 *kyrat* transfers the content of a **bash** user-defined module
-(located in either `~/.config/kyrat/bash` or in the directory `~/.config/kyrat/bashrc.d/`)
+(located in either `~/.config/kyrat/bashrc` or in the directory `~/.config/kyrat/bashrc.d/`)
 to the remote host and open a bash session by sourcing the transferred modules.
 
 Similarly, *kyrat* can transfer **inputrc** files (located
@@ -74,6 +75,18 @@ Write locally in either `~/.config/kyrat/inputrc` or any files inside `~/.config
     set completion-ignore-case On
 
 Now, just access to your remote host via `kyrat` and the terminal will have case insensitive tab completion.
+
+Comparison with sshrc
+=====================
+[sshrc](https://github.com/Russell91/sshrc) is a program that performs a similar task as Kyrat.
+Despite its popularity, at the time of writing, there are significant drawbacks on using sshrc.
+
+The following table shows the comparison between Kyrat and sshrc:
+
+|  | Dotfile types supported | Platform  | Unit tests | Integration tests | Compression | Portability | Default remote shells | Automatic removal of the remote dotfiles | Remote dotfiles location |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Kyrat** | `bash`, `vim`, `inputrc` | Linux, OSX | **YES** | **YES** | **YES** | Small number of `coreutils` executables required | **ANY** | **YES** | `/tmp` and fallback to `$HOME` |
+| **sshrc** | `bash` (the rest requires additional work) | Unknown | **NO** | **NO** | **YES** | Big number of executables required (`tar`, `awk`, `openssl`, and more) | `bash` only | **YES** | `/tmp` only |
 
 Installation
 ============
