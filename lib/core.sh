@@ -7,6 +7,8 @@ BASH=bash
 GUNZIP=gunzip
 GZIP=gzip
 SSH=ssh
+# PATH needs to be updated since GNU Coreutils is required in OSX environments
+GNUBIN="/usr/local/opt/coreutils/libexec/gnubin"
 
 BASE_DIRS=("/tmp" "\$HOME")
 
@@ -146,6 +148,7 @@ function _get_remote_command(){
     local commands_opt=""
     [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
     local cmd="
+        [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:$PATH";
         for tmp_dir in ${BASE_DIRS[@]}; do [[ -w \"\$tmp_dir\" ]] && { base_dir=\"\$tmp_dir\"; break; } done;
         [[ -z \"\$base_dir\" ]] && { echo >&2 \"Could not find writable temp directory on the remote host. Aborting.\"; exit $NO_WRITABLE_DIRECTORY; };
         command -v $BASE64 >/dev/null 2>&1 || { echo >&2 \"kyrat requires $BASE64 command on the remote host. Aborting.\"; exit $NOT_EXISTING_COMMAND; };
