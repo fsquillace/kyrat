@@ -119,7 +119,7 @@ function test_execute_ssh(){
         echo "remote_command"
     }
     assertCommandSuccess _execute_ssh
-    assertEquals "-t -o bla -- remote_command" "$(cat $STDOUTF)"
+    assertEquals "-t -o bla -- bash -c 'remote_command'" "$(cat $STDOUTF)"
 }
 
 function test_execute_ssh_no_opts(){
@@ -132,7 +132,7 @@ function test_execute_ssh_no_opts(){
         echo "remote_command"
     }
     assertCommandSuccess _execute_ssh
-    assertEquals "-t -- remote_command" "$(cat $STDOUTF)"
+    assertEquals "-t -- bash -c 'remote_command'" "$(cat $STDOUTF)"
 }
 
 function test_get_remote_command_no_command(){
@@ -147,7 +147,7 @@ function test_get_remote_command_no_command(){
         assertEquals "inputrc" "$(cat $kyrat_home/inputrc)"
         assertEquals "vimrc" "$(cat $kyrat_home/vimrc)"
         assertEquals "$kyrat_home/inputrc" "$INPUTRC"
-        assertEquals "let \$MYVIMRC='$kyrat_home/vimrc' | source \$MYVIMRC" "$VIMINIT"
+        assertEquals "let \$MYVIMRC=\"$kyrat_home/vimrc\" | source \$MYVIMRC" "$VIMINIT"
         echo "$kyrat_home"
     }
     BASH=bash_func
@@ -155,6 +155,7 @@ function test_get_remote_command_no_command(){
     local remote_command="$STDOUTF"
 
     assertCommandSuccess eval "$(cat $remote_command)"
+    # Check that the kyrat home directory has been removed
     [[ -d "$(cat $STDOUTF)" ]]
     assertEquals 1 $?
 }
@@ -171,7 +172,7 @@ function test_get_remote_command(){
         assertEquals "inputrc" "$(cat $kyrat_home/inputrc)"
         assertEquals "vimrc" "$(cat $kyrat_home/vimrc)"
         assertEquals "$kyrat_home/inputrc" "$INPUTRC"
-        assertEquals "let \$MYVIMRC='$kyrat_home/vimrc' | source \$MYVIMRC" "$VIMINIT"
+        assertEquals "let \$MYVIMRC=\"$kyrat_home/vimrc\" | source \$MYVIMRC" "$VIMINIT"
         echo "$kyrat_home"
     }
     BASH=bash_func
@@ -179,6 +180,22 @@ function test_get_remote_command(){
     local remote_command="$STDOUTF"
 
     assertCommandSuccess eval "$(cat $remote_command)"
+    # Check that the kyrat home directory has been removed
+    [[ -d "$(cat $STDOUTF)" ]]
+    assertEquals 1 $?
+}
+
+function test_get_remote_command_nested(){
+    COMMANDS=("bash" "-c" "bash -c \"ls -l\"")
+    bash_func(){
+        assertEquals "--rcfile $kyrat_home/bashrc -i -c bash -c bash -c ls -l" "$(echo "$@")"
+    }
+    BASH=bash_func
+    assertCommandSuccess _get_remote_command
+    local remote_command="$STDOUTF"
+
+    assertCommandSuccess eval "$(cat $remote_command)"
+    # Check that the kyrat home directory has been removed
     [[ -d "$(cat $STDOUTF)" ]]
     assertEquals 1 $?
 }

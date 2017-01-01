@@ -1,6 +1,6 @@
 kyrat
 =====
-Kyrat - An ssh wrapper script that brings your dotfiles always with you
+Kyrat - An ssh wrapper script that brings your dotfiles always with you on Linux and OSX
 
 |Project Status|Communication|
 |:-----------:|:-----------:|
@@ -10,6 +10,9 @@ Kyrat - An ssh wrapper script that brings your dotfiles always with you
 - [Description](#description)
 - [Quickstart](#quickstart)
 - [Installation](#installation)
+  - [Dependencies](#dependencies)
+  - [Linux](#linux)
+  - [OSX](#osx)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Authors](#authors)
@@ -18,7 +21,7 @@ Kyrat - An ssh wrapper script that brings your dotfiles always with you
 Description
 ===========
 kyrat is a ssh wrapper that allows to source local dotfiles
-on a ssh session in a remote host.
+on a ssh session to a remote host. It works either from/to a Linux or OSX machine.
 
 *kyrat* transfers the content of a **bash** user-defined module
 (located in either `~/.config/kyrat/bash` or in the directory `~/.config/kyrat/bashrc.d/`)
@@ -30,10 +33,8 @@ inside the directory `~/.config/kyrat/inputrc.d/`)
 and **vimrc** files (located in either `~/.config/kyrat/vimrc` or inside
 the directory `~/.config/kyrat/vimrc.d/`).
 
-
 Quickstart
 ==========
-
 ### Bash ###
 Write locally in either `~/.config/kyrat/bashrc` or any files inside `~/.config/kyrat/bashrc.d/`:
 
@@ -74,17 +75,37 @@ Write locally in either `~/.config/kyrat/inputrc` or any files inside `~/.config
 
 Now, just access to your remote host via `kyrat` and the terminal will have case insensitive tab completion.
 
-
 Installation
 ============
+Dependencies
+------------
 Before installing Kyrat be sure that all dependencies are properly installed in your system.
 The Kyrat dependencies are the following:
 
 - [bash (>=4.0)](https://www.gnu.org/software/bash/)
 - [GNU coreutils](https://www.gnu.org/software/coreutils/)
 
-To install Kyrat, just clone the repository and update `PATH` variable:
+Linux
+-----
+Assuming all Kyrat dependencies are properly installed in the system, to install Kyrat
+run the following:
+```sh
+    git clone https://github.com/fsquillace/kyrat ~/.local/share/kyrat
+    export PATH=$PATH:~/.local/share/kyrat/bin
+```
 
+OSX
+---
+In order to install all Kyrat dependencies, you first need to install [Homebrew](http://brew.sh/).
+
+To install all the needed dependencies via Homebrew:
+```sh
+brew update
+brew install coreutils
+```
+
+Once all Kyrat dependencies are properly installed in the system, to install Kyrat
+run the following:
 ```sh
     git clone https://github.com/fsquillace/kyrat ~/.local/share/kyrat
     export PATH=$PATH:~/.local/share/kyrat/bin
@@ -113,4 +134,3 @@ Last words
     You were not born to live like brutes
     but to follow virtue and knowledge.
     [verse, Dante Alighieri, from Divine Comedy]
-

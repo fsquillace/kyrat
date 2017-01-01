@@ -2,6 +2,10 @@
 
 set -e -o pipefail
 
+# PATH needs to be updated since GNU Coreutils is required in OSX environments
+GNUBIN="/usr/local/opt/coreutils/libexec/gnubin"
+[[ -d "$GNUBIN" ]] && PATH="$GNUBIN:$PATH"
+
 KYRAT_ROOT="$(readlink -f $(dirname $(readlink -f "$0"))/..)"
 
 source "${KYRAT_ROOT}/lib/core.sh"
