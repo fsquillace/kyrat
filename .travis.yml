@@ -2,7 +2,14 @@ os:
   - linux
   - osx
 
+sudo: required
+
 language: bash
+
+before_install:
+  - export BASH_SHELL="/bin/bash"
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./tests/integ-tests/install-linux-deps.sh; export ZSH_SHELL="/bin/zsh"; export FISH_SHELL="/usr/bin/fish"; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./tests/integ-tests/install-osx-deps.sh; export ZSH_SHELL="/usr/local/bin/zsh"; export FISH_SHELL="/usr/local/bin/fish"; fi;
 
 install:
   - ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
@@ -11,4 +18,6 @@ install:
 script:
   - ./tests/checkstyle/checkstyle.sh
   - ./tests/unit-tests/unit-tests.sh
-  - ./tests/integ-tests/integ-tests.sh
+  - ./tests/integ-tests/integ-tests.sh $BASH_SHELL
+  - ./tests/integ-tests/integ-tests.sh $ZSH_SHELL
+  - ./tests/integ-tests/integ-tests.sh $FISH_SHELL
