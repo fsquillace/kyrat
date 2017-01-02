@@ -2,9 +2,14 @@
 
 set -e
 
+DEFAULT_SHELL=${1:-/bin/bash}
+
+sudo chsh -s $DEFAULT_SHELL $USER
+
 mkdir -p ~/.config/kyrat
 echo "alias q='exit'" > ~/.config/kyrat/bashrc
 
+./bin/kyrat -o "StrictHostKeyChecking no" localhost -- echo \$SHELL
 ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- q
 ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- ls -lh
 ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- [[ ! -z "\\\$INPUTRC" ]]
