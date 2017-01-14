@@ -89,10 +89,7 @@ function _parse_args(){
         esac
     done
 
-    COMMANDS=()
-    for arg in "$@"; do
-        COMMANDS+=("$arg")
-    done
+    COMMANDS=("$@")
 }
 
 #######################################
@@ -117,7 +114,8 @@ function _execute_ssh(){
     command -v $GZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GZIP to be installed locally. Aborting."; return $NOT_EXISTING_COMMAND; }
 
     local remote_command="$(_get_remote_command)"
-    $SSH -t "${SSH_OPTS[@]}" -- "$BASH -c '$remote_command'"
+    echo $BASH -c "'$remote_command'"
+    $SSH -t "${SSH_OPTS[@]}" -- $BASH -c "'$remote_command'"
 }
 
 #######################################
@@ -141,24 +139,22 @@ function _execute_ssh(){
 #   The composed remote command to execute in the ssh session.
 #######################################
 function _get_remote_command(){
-    local rc_script="$(_concatenate_files "$KYRAT_HOME"/bashrc "$KYRAT_HOME"/bashrc.d/* | $GZIP | $BASE64)"
+    local bashrc_script="$(_concatenate_files "$KYRAT_HOME"/bashrc "$KYRAT_HOME"/bashrc.d/* | $GZIP | $BASE64)"
     local inputrc_script="$(_concatenate_files "$KYRAT_HOME"/inputrc "$KYRAT_HOME"/inputrc.d/* | $GZIP | $BASE64)"
     local vimrc_script="$(_concatenate_files "$KYRAT_HOME"/vimrc "$KYRAT_HOME"/vimrc.d/* | $GZIP | $BASE64)"
 
     local commands_opt=""
-    [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
-    local cmd="
-        [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:$PATH";
+    [[ -z "${COMMANDS[@]}" ]] || commands_opt='-c '"\'"${COMMANDS[@]}"\'"
+    local cmd="[[ -d \"$GNUBIN\" ]] && PATH=\"$GNUBIN:$PATH\";
         for tmp_dir in ${BASE_DIRS[@]}; do [[ -w \"\$tmp_dir\" ]] && { base_dir=\"\$tmp_dir\"; break; } done;
         [[ -z \"\$base_dir\" ]] && { echo >&2 \"Could not find writable temp directory on the remote host. Aborting.\"; exit $NO_WRITABLE_DIRECTORY; };
         command -v $BASE64 >/dev/null 2>&1 || { echo >&2 \"kyrat requires $BASE64 command on the remote host. Aborting.\"; exit $NOT_EXISTING_COMMAND; };
         command -v $GUNZIP >/dev/null 2>&1 || { echo >&2 \"kyrat requires $GUNZIP command on the remote host. Aborting.\"; exit $NOT_EXISTING_COMMAND; };
         kyrat_home=\"\$(mktemp -d kyrat-XXXXX -p \"\$base_dir\")\";
         trap \"rm -rf \"\$kyrat_home\"; exit\" EXIT HUP INT QUIT PIPE TERM KILL;
-        echo \"${rc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/bashrc\";
+        echo \"${bashrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/bashrc\";
         echo \"${inputrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/inputrc\";
         echo \"${vimrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/vimrc\";
-        VIMINIT=\"let \\\$MYVIMRC=\\\"\${kyrat_home}/vimrc\\\" | source \\\$MYVIMRC\" INPUTRC=\"\${kyrat_home}/inputrc\" $BASH --rcfile \"\${kyrat_home}/bashrc\" -i ${commands_opt};
-    "
+        VIMINIT=\"let \\\$MYVIMRC=\\\"\${kyrat_home}/vimrc\\\" | source \\\$MYVIMRC\" INPUTRC=\"\${kyrat_home}/inputrc\" $BASH --rcfile \"\${kyrat_home}/bashrc\" -i ${commands_opt};"
     echo "$cmd"
 }

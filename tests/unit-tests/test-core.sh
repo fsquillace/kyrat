@@ -167,7 +167,7 @@ function test_get_remote_command(){
     COMMANDS=("mycommand -la")
     bash_func(){
         local kyrat_home=$(echo "$2" | sed 's/\/bashrc//')
-        assertEquals "--rcfile $kyrat_home/bashrc -i -c mycommand -la" "$(echo "$@")"
+        assertEquals "--rcfile $kyrat_home/bashrc -i -c 'mycommand -la'" "$(echo "$@")"
         assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
         assertEquals "inputrc" "$(cat $kyrat_home/inputrc)"
         assertEquals "vimrc" "$(cat $kyrat_home/vimrc)"
@@ -186,9 +186,9 @@ function test_get_remote_command(){
 }
 
 function test_get_remote_command_nested(){
-    COMMANDS=("bash" "-c" "bash -c \"ls -l\"")
+    COMMANDS=("bash -c \"ls -l\"")
     bash_func(){
-        assertEquals "--rcfile $kyrat_home/bashrc -i -c bash -c bash -c ls -l" "$(echo "$@")"
+        assertEquals "--rcfile $kyrat_home/bashrc -i -c 'bash -c ls -l'" "$(echo "$@")"
     }
     BASH=bash_func
     assertCommandSuccess _get_remote_command

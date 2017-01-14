@@ -9,11 +9,11 @@ sudo chsh -s $DEFAULT_SHELL $USER
 mkdir -p ~/.config/kyrat
 echo "alias q='exit'" > ~/.config/kyrat/bashrc
 
-./bin/kyrat -o "StrictHostKeyChecking no" localhost -- echo \$SHELL
+./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- echo \$SHELL
 ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- q
 ./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- ls -lh
-./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- [[ ! -z "\\\$INPUTRC" ]]
-./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- [[ ! -z "\\\$VIMINIT" ]]
+./bin/kyrat -v -o "StrictHostKeyChecking no" localhost --  "[[ ! -z "\$INPUTRC" ]]"
+./bin/kyrat -v -o "StrictHostKeyChecking no" localhost -- "[[ ! -z "\$VIMINIT" ]]"
 
 
 echo -e "let myvariable=10\nlet myvariable\nq" > ~/.config/kyrat/vimrc
