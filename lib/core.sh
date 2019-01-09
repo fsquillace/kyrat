@@ -159,7 +159,7 @@ function _get_remote_command(){
         kyrat_home=\"\$(mktemp -d kyrat-XXXXX -p \"\$base_dir\")\";
         trap \"rm -rf \"\$kyrat_home\"; exit\" EXIT HUP INT QUIT PIPE TERM KILL;
         echo \"${rc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/bashrc\";
-        echo \"source \${HOME}/.bashrc\" >> \"\${kyrat_home}/bashrc\";
+        [[ -e \${HOME}/.bashrc ]] && echo \"source \${HOME}/.bashrc\" >> \"\${kyrat_home}/bashrc\";
         echo \"${inputrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/inputrc\";
         echo \"${vimrc_script}\" | $BASE64 -di | $GUNZIP > \"\${kyrat_home}/vimrc\";
         VIMINIT=\"let \\\$MYVIMRC=\\\"\${kyrat_home}/vimrc\\\" | source \\\$MYVIMRC\" INPUTRC=\"\${kyrat_home}/inputrc\" $BASH --rcfile \"\${kyrat_home}/bashrc\" -i ${commands_opt};
