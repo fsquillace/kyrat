@@ -144,7 +144,7 @@ function test_get_remote_command_no_command(){
         local kyrat_home=$(echo "$2" | sed 's/\/bashrc//')
         assertEquals "--rcfile $kyrat_home/bashrc -i" "$(echo "$@")"
         if [[ -e $HOME/.bashrc ]]; then
-            assertEquals "$(echo -e "bashrc\nsource $HOME/.bashrc")" "$(cat $kyrat_home/bashrc)"
+            assertEquals "$(echo -e "source $HOME/.bashrc\nbashrc")" "$(cat $kyrat_home/bashrc)"
         else
             assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
         fi
@@ -173,7 +173,7 @@ function test_get_remote_command(){
         local kyrat_home=$(echo "$2" | sed 's/\/bashrc//')
         assertEquals "--rcfile $kyrat_home/bashrc -i -c mycommand -la" "$(echo "$@")"
         if [[ -e $HOME/.bashrc ]]; then
-            assertEquals "$(echo -e "bashrc\nsource $HOME/.bashrc")" "$(cat $kyrat_home/bashrc)"
+            assertEquals "$(echo -e "source $HOME/.bashrc\nbashrc")" "$(cat $kyrat_home/bashrc)"
         else
             assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
         fi
