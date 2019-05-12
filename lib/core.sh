@@ -146,8 +146,7 @@ function _get_remote_command(){
     local commands_opt=""
     [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
     $CAT <<EOF
-[[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/
-[[ -e /etc/motd ]] && $CAT /etc/motd;
+[[ -e /etc/motd ]] && $CAT /etc/motd || { [[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/; }
 [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:\$PATH";
 for tmp_dir in ${BASE_DIRS[@]}; do [[ -w "\$tmp_dir" ]] && { base_dir="\$tmp_dir"; break; } done;
 [[ -z "\$base_dir" ]] && { echo >&2 "Could not find writable temp directory on the remote host. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
