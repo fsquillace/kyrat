@@ -61,6 +61,7 @@ function kyrat(){
     mkdir -p $KYRAT_HOME/bashrc.d
     mkdir -p $KYRAT_HOME/inputrc.d
     mkdir -p $KYRAT_HOME/vimrc.d
+    mkdir -p $KYRAT_HOME/tmux.conf.d
     _parse_args "$@"
     _execute_ssh
 }
