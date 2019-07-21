@@ -61,6 +61,7 @@ function kyrat(){
     mkdir -p $KYRAT_HOME/bashrc.d
     mkdir -p $KYRAT_HOME/inputrc.d
     mkdir -p $KYRAT_HOME/vimrc.d
+    mkdir -p $KYRAT_HOME/tmux.conf.d
     _parse_args "$@"
     _execute_ssh
 }
@@ -142,12 +143,12 @@ function _get_remote_command(){
     local rc_script="$(_concatenate_files "$KYRAT_HOME"/bashrc "$KYRAT_HOME"/bashrc.d/* | $GZIP | $BASE64)"
     local inputrc_script="$(_concatenate_files "$KYRAT_HOME"/inputrc "$KYRAT_HOME"/inputrc.d/* | $GZIP | $BASE64)"
     local vimrc_script="$(_concatenate_files "$KYRAT_HOME"/vimrc "$KYRAT_HOME"/vimrc.d/* | $GZIP | $BASE64)"
+    local tmux_conf="$(_concatenate_files "$KYRAT_HOME"/tmux.conf "$KYRAT_HOME"/tmux.conf.d/* | $GZIP | $BASE64)"
 
     local commands_opt=""
     [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
     $CAT <<EOF
-[[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/
-[[ -e /etc/motd ]] && $CAT /etc/motd;
+[[ -e /etc/motd ]] && $CAT /etc/motd || { [[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/; }
 [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:\$PATH";
 for tmp_dir in ${BASE_DIRS[@]}; do [[ -w "\$tmp_dir" ]] && { base_dir="\$tmp_dir"; break; } done;
 [[ -z "\$base_dir" ]] && { echo >&2 "Could not find writable temp directory on the remote host. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
@@ -159,6 +160,7 @@ trap "rm -rf "\$kyrat_home"; exit" EXIT HUP INT QUIT PIPE TERM KILL;
 echo "${rc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/bashrc";
 echo "${inputrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/inputrc";
 echo "${vimrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/vimrc";
-VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" $BASH --rcfile "\${kyrat_home}/bashrc" -i ${commands_opt};
+echo "${tmux_conf}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/tmux.conf";
+VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" $BASH --rcfile "\${kyrat_home}/bashrc" -i ${commands_opt};
 EOF
 }
