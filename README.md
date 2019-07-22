@@ -76,6 +76,21 @@ Write locally in either `~/.config/kyrat/inputrc` or any files inside `~/.config
 
 Now, just access to your remote host via `kyrat` and the terminal will have case insensitive tab completion.
 
+### Tmux ###
+Write locally in either `~/.config/kyrat/tmux.conf` or any files inside `~/.config/kyrat/tmux.conf.d/`:
+
+    bind e setw synchronize-panes on \; display "Synchronization ON"
+    bind E setw synchronize-panes off \; display "Synchronization OFF"
+
+Now, just access to your remote host via `kyrat` and run the following:
+
+```bash
+tmux -f "$TMUX_CONF"
+```
+
+This will open a tmux session and you can now toggle synchronization between
+panes on the same window with the keys `e/E`.
+
 Comparison with sshrc
 =====================
 [sshrc](https://github.com/Russell91/sshrc) is a program that performs a similar task as Kyrat.
