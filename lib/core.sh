@@ -161,6 +161,6 @@ echo "${rc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/bashrc";
 echo "${inputrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/inputrc";
 echo "${vimrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/vimrc";
 echo "${tmux_conf}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/tmux.conf";
-VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" $BASH --rcfile "\${kyrat_home}/bashrc" -i ${commands_opt};
+VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" KYRAT_HOME="\${kyrat_home}" $BASH --rcfile "\${kyrat_home}/bashrc" -i ${commands_opt};
 EOF
 }
