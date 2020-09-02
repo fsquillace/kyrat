@@ -9,13 +9,13 @@ Kyrat - An ssh wrapper script that brings your dotfiles always with you on Linux
 **Table of Contents**
 - [Description](#description)
 - [Quickstart](#quickstart)
-- [Comparison with sshrc](#comparison-with-sshrc)
 - [Installation](#installation)
   - [Dependencies](#dependencies)
   - [Linux](#linux)
   - [OSX](#osx)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+- [Donating](#donating)
 - [Authors](#authors)
 - [Last words](#last-words)
 
@@ -34,6 +34,20 @@ on a ssh session to a remote host. It works either from/to a Linux or OSX machin
 
 The environment variable `KYRAT_SHELL` can be used to set which shell to spawn
 remotely. The allowed shells are `bash`, `zsh` and `sh`.
+
+### Kyrat features
+The following summarizes the Kyrat features:
+
+- Dotfile types supported: `bash`, `vim`, `inputrc`, `tmux`, `zshrc`
+- Platform: Linux, OSX
+- Compression: **YES**
+- Default remote shells: **YES**
+- Automatic removal of remote dotfiles when exiting from Kyrat session: **YES**
+- Remove dotfile location: `/tmp` and fallback to `$HOME`
+- Remote shells available to spawn: `bash`, `zsh`, `sh`
+
+### How it works?
+TODO
 
 Quickstart
 ==========
@@ -92,18 +106,6 @@ tmux -f "$TMUX_CONF"
 This will open a tmux session and you can now toggle synchronization between
 panes on the same window with the keys `e/E`.
 
-Comparison with sshrc
-=====================
-[sshrc](https://github.com/Russell91/sshrc) is a program that performs a similar task as Kyrat.
-Despite its popularity, at the time of writing, there are significant drawbacks on using sshrc.
-
-The following table shows the comparison between Kyrat and sshrc:
-
-|  | Dotfile types supported | Platform  | Unit tests | Integration tests | Compression | Portability | Default remote shells | Automatic removal of the remote dotfiles | Remote dotfiles location |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Kyrat** | `bash`, `vim`, `inputrc`, `tmux`, `zshrc` | Linux, OSX | **YES** | **YES** | **YES** | Small number of `coreutils` executables required | **ANY** | **YES** | `/tmp` and fallback to `$HOME` |
-| **sshrc** | `bash` (the rest requires additional work) | Unknown | **NO** | **NO** | **YES** | Big number of executables required (`tar`, `awk`, `openssl`, and more) | `bash` only | **YES** | `/tmp` only |
-
 Installation
 ============
 Dependencies
@@ -130,7 +132,7 @@ In order to install all Kyrat dependencies, you first need to install [Homebrew]
 To install all the needed dependencies via Homebrew:
 ```sh
 brew update
-brew install coreutils
+brew install bash coreutils
 ```
 
 Once all Kyrat dependencies are properly installed in the system, to install Kyrat
@@ -153,9 +155,18 @@ You could help improving Kyrat in the following ways:
 - [Suggesting Enhancements](CONTRIBUTING.md#suggesting-enhancements)
 - [Writing Code](CONTRIBUTING.md#your-first-code-contribution)
 
+Donating
+========
+To sustain the project please consider funding by donations through
+the [GitHub Sponsors page](https://github.com/sponsors/fsquillace/).
+
 Authors
 =======
-- Filippo Squillace <feel.sqoox@gmail.com>.
+Kyrat was originally created in April 2014 by [Filippo Squillace (feel.sqoox@gmail.com)](https://github.com/fsquillace).
+
+Here is a list of [**really appreciated contributors**](https://github.com/fsquillace/junest/graphs/contributors)!
+
+[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/0)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/0)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/1)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/1)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/2)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/2)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/3)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/3)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/4)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/4)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/5)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/5)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/6)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/6)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/7)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/7)
 
 Last words
 ==========
