@@ -24,15 +24,16 @@ Description
 kyrat is a ssh wrapper that allows to source local dotfiles
 on a ssh session to a remote host. It works either from/to a Linux or OSX machine.
 
-*kyrat* transfers the content of a **bash** user-defined module
-(located in either `~/.config/kyrat/bashrc` or in the directory `~/.config/kyrat/bashrc.d/`)
-to the remote host and open a bash session by sourcing the transferred modules.
+*kyrat* can transfer to the remote host and source the following files:
 
-Similarly, *kyrat* can transfer **inputrc** files (located
-in either `~/.config/kyrat/inputrc` or
-inside the directory `~/.config/kyrat/inputrc.d/`)
-and **vimrc** files (located in either `~/.config/kyrat/vimrc` or inside
-the directory `~/.config/kyrat/vimrc.d/`).
+- **bashrc** files (located in either `~/.config/kyrat/bashrc` or inside the directory `~/.config/kyrat/bashrc.d/`).
+- **inputrc** files (located in either `~/.config/kyrat/inputrc` or inside the directory `~/.config/kyrat/inputrc.d/`)
+- **vimrc** files (located in either `~/.config/kyrat/vimrc` or inside the directory `~/.config/kyrat/vimrc.d/`).
+- **tmux.conf** files (located in either `~/.config/kyrat/tmux.conf` or inside the directory `~/.config/kyrat/tmux.conf.d/`).
+- **zshrc** files (located in either `~/.config/kyrat/zshrc` or inside the directory `~/.config/kyrat/zshrc.d/`).
+
+The environment variable `KYRAT_SHELL` can be used to set which shell to spawn
+remotely. The allowed shells are `bash`, `zsh` and `sh`.
 
 Quickstart
 ==========
@@ -100,7 +101,7 @@ The following table shows the comparison between Kyrat and sshrc:
 
 |  | Dotfile types supported | Platform  | Unit tests | Integration tests | Compression | Portability | Default remote shells | Automatic removal of the remote dotfiles | Remote dotfiles location |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Kyrat** | `bash`, `vim`, `inputrc` | Linux, OSX | **YES** | **YES** | **YES** | Small number of `coreutils` executables required | **ANY** | **YES** | `/tmp` and fallback to `$HOME` |
+| **Kyrat** | `bash`, `vim`, `inputrc`, `tmux`, `zshrc` | Linux, OSX | **YES** | **YES** | **YES** | Small number of `coreutils` executables required | **ANY** | **YES** | `/tmp` and fallback to `$HOME` |
 | **sshrc** | `bash` (the rest requires additional work) | Unknown | **NO** | **NO** | **YES** | Big number of executables required (`tar`, `awk`, `openssl`, and more) | `bash` only | **YES** | `/tmp` only |
 
 Installation
