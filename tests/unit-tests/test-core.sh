@@ -160,12 +160,12 @@ function test_get_remote_command_no_command(){
         assertEquals "$kyrat_home" $ZDOTDIR
         echo "$kyrat_home"
     }
+    KYRAT_SHELL=bash_func
     BASH=bash_func
     assertCommandSuccess _get_remote_command
     local remote_command="$STDOUTF"
 
     assertCommandSuccess eval "$(cat $remote_command)"
-    cat $STDOUTF
     # Check that the kyrat home directory has been removed
     [[ -d "$(cat $STDOUTF)" ]]
     assertEquals 1 $?

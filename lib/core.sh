@@ -177,7 +177,7 @@ trap "rm -rf "\$kyrat_home"; exit" EXIT HUP INT QUIT PIPE TERM KILL;
 EOF
 
     local commands_opt=""
-    if [[ ! -z "${COMMANDS[@]}" ]]
+    if [[ -n "${COMMANDS[@]}" ]]
     then
         commands_opt="-c \"${COMMANDS[@]}\""
     else

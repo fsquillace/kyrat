@@ -1,6 +1,6 @@
 kyrat
 =====
-Kyrat - An ssh wrapper script that brings your dotfiles always with you on Linux and OSX
+Kyrat - A simple ssh wrapper script that brings your dotfiles always with you on Linux and OSX
 
 |Project Status|Communication|
 |:-----------:|:-----------:|
@@ -22,9 +22,11 @@ Kyrat - An ssh wrapper script that brings your dotfiles always with you on Linux
 Description
 ===========
 kyrat is a ssh wrapper that allows to source local dotfiles
-on a ssh session to a remote host. It works either from/to a Linux or OSX machine.
+on a ssh session to a remote host.
+No installations or root access on the remote host are required.
+It works either from/to a Linux or OSX machine.
 
-*kyrat* can transfer to the remote host and source the following files:
+*kyrat* can transfer to the remote host and source the following dotfiles:
 
 - **bashrc** files (located in either `~/.config/kyrat/bashrc` or inside the directory `~/.config/kyrat/bashrc.d/`).
 - **inputrc** files (located in either `~/.config/kyrat/inputrc` or inside the directory `~/.config/kyrat/inputrc.d/`)
@@ -40,14 +42,23 @@ The following summarizes the Kyrat features:
 
 - Dotfile types supported: `bash`, `vim`, `inputrc`, `tmux`, `zshrc`
 - Platform: Linux, OSX
-- Compression: **YES**
-- Default remote shells: **YES**
+- Compression during tranfer: `gzip`
+- Encoding during transfe: `base64`
 - Automatic removal of remote dotfiles when exiting from Kyrat session: **YES**
-- Remove dotfile location: `/tmp` and fallback to `$HOME`
+- Remote dotfile location: `/tmp` and fallback to `$HOME`
 - Remote shells available to spawn: `bash`, `zsh`, `sh`
 
 ### How it works?
-TODO
+
+This is the sequence of steps that occur when running Kyrat:
+
+- The dotfiles are encoded using Base64 and compressed with Gzip
+- The dotfile blobs are passed through the ssh command line containing a script
+- The remote host will execute such script with the instructions of:
+  - how to decode and extract the dotfiles
+  - where to store the dotfiles (inside a directory in `tmp` or `$HOME`)
+  - which variable environments to set to make the dotfiles working properly
+  - which remote shell to spawn (`bash`, `zsh` or `sh`)
 
 Quickstart
 ==========
