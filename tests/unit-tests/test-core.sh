@@ -91,6 +91,8 @@ function test_kyrat(){
     assertEquals "$(echo -e "parse localhost\nexecute")" "$(cat $STDOUTF)"
     [[ -d $KYRAT_HOME/bashrc.d ]]
     assertEquals 0 $?
+    [[ -d $KYRAT_HOME/zshrc.d ]]
+    assertEquals 0 $?
     [[ -d $KYRAT_HOME/inputrc.d ]]
     assertEquals 0 $?
     [[ -d $KYRAT_HOME/vimrc.d ]]
@@ -139,6 +141,7 @@ function test_execute_ssh_no_opts(){
 
 function test_get_remote_command_no_command(){
     echo "bashrc" > $KYRAT_HOME/bashrc
+    echo "zshrc" > $KYRAT_HOME/zshrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
@@ -146,19 +149,18 @@ function test_get_remote_command_no_command(){
     bash_func(){
         local kyrat_home=$(echo "$2" | sed 's/\/bashrc//')
         assertEquals "--rcfile $kyrat_home/bashrc -i" "$(echo "$@")"
-        if [[ -e $HOME/.bashrc ]]; then
-            assertEquals "$(echo -e "source $HOME/.bashrc\nbashrc")" "$(cat $kyrat_home/bashrc)"
-        else
-            assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
-        fi
+        assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
+        assertEquals "zshrc" "$(cat $kyrat_home/.zshrc)"
         assertEquals "inputrc" "$(cat $kyrat_home/inputrc)"
         assertEquals "vimrc" "$(cat $kyrat_home/vimrc)"
         assertEquals "tmux.conf" "$(cat $kyrat_home/tmux.conf)"
         assertEquals "$kyrat_home/inputrc" "$INPUTRC"
         assertEquals "let \$MYVIMRC=\"$kyrat_home/vimrc\" | source \$MYVIMRC" "$VIMINIT"
         assertEquals "$kyrat_home/tmux.conf" $TMUX_CONF
+        assertEquals "$kyrat_home" $ZDOTDIR
         echo "$kyrat_home"
     }
+    KYRAT_SHELL=bash_func
     BASH=bash_func
     assertCommandSuccess _get_remote_command
     local remote_command="$STDOUTF"
@@ -173,26 +175,26 @@ function test_get_remote_command(){
     echo "bashrc" > $KYRAT_HOME/bashrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
+    echo "zshrc" > $KYRAT_HOME/zshrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
 
     COMMANDS=("mycommand -la")
     bash_func(){
         local kyrat_home=$(echo "$2" | sed 's/\/bashrc//')
         assertEquals "--rcfile $kyrat_home/bashrc -i -c mycommand -la" "$(echo "$@")"
-        if [[ -e $HOME/.bashrc ]]; then
-            assertEquals "$(echo -e "source $HOME/.bashrc\nbashrc")" "$(cat $kyrat_home/bashrc)"
-        else
-            assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
-        fi
+        assertEquals "bashrc" "$(cat $kyrat_home/bashrc)"
+        assertEquals "zshrc" "$(cat $kyrat_home/.zshrc)"
         assertEquals "inputrc" "$(cat $kyrat_home/inputrc)"
         assertEquals "vimrc" "$(cat $kyrat_home/vimrc)"
         assertEquals "tmux.conf" "$(cat $kyrat_home/tmux.conf)"
         assertEquals "$kyrat_home/inputrc" "$INPUTRC"
         assertEquals "let \$MYVIMRC=\"$kyrat_home/vimrc\" | source \$MYVIMRC" "$VIMINIT"
         assertEquals "$kyrat_home/tmux.conf" $TMUX_CONF
+        assertEquals "$kyrat_home" $ZDOTDIR
         echo "$kyrat_home"
     }
     BASH=bash_func
+    KYRAT_SHELL=bash_func
     assertCommandSuccess _get_remote_command
     local remote_command="$STDOUTF"
 
@@ -204,6 +206,7 @@ function test_get_remote_command(){
 
 function test_get_remote_command_nested(){
     COMMANDS=("bash" "-c" "bash -c \"ls -l\"")
+
     bash_func(){
         assertEquals "--rcfile $kyrat_home/bashrc -i -c bash -c bash -c ls -l" "$(echo "$@")"
     }
@@ -221,6 +224,7 @@ function test_get_remote_command_no_base64(){
     echo "bashrc" > $KYRAT_HOME/bashrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
+    echo "vimrc" > $KYRAT_HOME/zshrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
     BASE64="not-exist"
 
@@ -235,6 +239,7 @@ function test_get_remote_command_no_gunzip(){
     echo "bashrc" > $KYRAT_HOME/bashrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
+    echo "zshrc" > $KYRAT_HOME/zshrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
     GUNZIP="not-exist"
 
@@ -249,6 +254,7 @@ function test_get_remote_command_no_base_dirs(){
     echo "bashrc" > $KYRAT_HOME/bashrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
+    echo "zshrc" > $KYRAT_HOME/zshrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
     BASE_DIRS=("/")
 

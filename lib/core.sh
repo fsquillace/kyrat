@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 KYRAT_HOME=${KYRAT_HOME:-${HOME}/.config/kyrat}
+KYRAT_SHELL=${KYRAT_SHELL:-bash}
 
 BASE64=base64
 BASH=bash
+ZSH=zsh
+SH=sh
 CAT=cat
 GUNZIP=gunzip
 GZIP=gzip
@@ -15,6 +18,7 @@ BASE_DIRS=("/tmp" "\$HOME")
 
 NOT_EXISTING_COMMAND=111
 NO_WRITABLE_DIRECTORY=112
+KYRAT_SHELL_NOT_CORRECT=113
 
 #######################################
 # Concatenate files to standard output.
@@ -59,6 +63,7 @@ function _concatenate_files(){
 #######################################
 function kyrat(){
     mkdir -p $KYRAT_HOME/bashrc.d
+    mkdir -p $KYRAT_HOME/zshrc.d
     mkdir -p $KYRAT_HOME/inputrc.d
     mkdir -p $KYRAT_HOME/vimrc.d
     mkdir -p $KYRAT_HOME/tmux.conf.d
@@ -114,6 +119,10 @@ function _parse_args(){
 function _execute_ssh(){
     command -v $BASE64 >/dev/null 2>&1 || { echo >&2 "kyrat requires $BASE64 to be installed locally. Aborting."; return $NOT_EXISTING_COMMAND; }
     command -v $GZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GZIP to be installed locally. Aborting."; return $NOT_EXISTING_COMMAND; }
+    if [[ $KYRAT_SHELL != "$BASH" ]] && [[ $KYRAT_SHELL != "$ZSH" ]] && [[ $KYRAT_SHELL != "$SH" ]]
+    then
+        echo >&2 "KYRAT_SHELL not set correctly: $KYRAT_SHELL. Aborting."; return $KYRAT_SHELL_NOT_CORRECT;
+    fi
 
     local remote_command="$(_get_remote_command)"
     $SSH -t "${SSH_OPTS[@]}" -- "$BASH -c '$remote_command'"
@@ -140,15 +149,24 @@ function _execute_ssh(){
 #   The composed remote command to execute in the ssh session.
 #######################################
 function _get_remote_command(){
-    local rc_script="$(_concatenate_files "$KYRAT_HOME"/bashrc "$KYRAT_HOME"/bashrc.d/* | $GZIP | $BASE64)"
+    local bashrc_script="$(_concatenate_files "$KYRAT_HOME"/bashrc "$KYRAT_HOME"/bashrc.d/* | $GZIP | $BASE64)"
+    local zshrc_script="$(_concatenate_files "$KYRAT_HOME"/zshrc "$KYRAT_HOME"/zshrc.d/* | $GZIP | $BASE64)"
     local inputrc_script="$(_concatenate_files "$KYRAT_HOME"/inputrc "$KYRAT_HOME"/inputrc.d/* | $GZIP | $BASE64)"
     local vimrc_script="$(_concatenate_files "$KYRAT_HOME"/vimrc "$KYRAT_HOME"/vimrc.d/* | $GZIP | $BASE64)"
     local tmux_conf="$(_concatenate_files "$KYRAT_HOME"/tmux.conf "$KYRAT_HOME"/tmux.conf.d/* | $GZIP | $BASE64)"
 
-    local commands_opt=""
-    [[ -z "${COMMANDS[@]}" ]] || commands_opt="-c \"${COMMANDS[@]}\""
+    if [[ $KYRAT_SHELL == "$BASH" ]]
+    then
+        KYRAT_SHELL_CMD="$BASH --rcfile "\${kyrat_home}/bashrc" -i"
+    elif [[ $KYRAT_SHELL == "$ZSH" ]]
+    then
+        KYRAT_SHELL_CMD="$ZSH -i"
+    elif [[ $KYRAT_SHELL == "$SH" ]]
+    then
+        KYRAT_SHELL_CMD="$SH -i"
+    fi
+
     $CAT <<EOF
-[[ -e /etc/motd ]] && $CAT /etc/motd || { [[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/; }
 [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:\$PATH";
 for tmp_dir in ${BASE_DIRS[@]}; do [[ -w "\$tmp_dir" ]] && { base_dir="\$tmp_dir"; break; } done;
 [[ -z "\$base_dir" ]] && { echo >&2 "Could not find writable temp directory on the remote host. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
@@ -156,11 +174,24 @@ command -v $BASE64 >/dev/null 2>&1 || { echo >&2 "kyrat requires $BASE64 command
 command -v $GUNZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GUNZIP command on the remote host. Aborting."; exit $NOT_EXISTING_COMMAND; };
 kyrat_home="\$(mktemp -d kyrat-XXXXX -p "\$base_dir")";
 trap "rm -rf "\$kyrat_home"; exit" EXIT HUP INT QUIT PIPE TERM KILL;
-[[ -e \${HOME}/.bashrc ]] && echo "source \${HOME}/.bashrc" > "\${kyrat_home}/bashrc";
-echo "${rc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/bashrc";
+EOF
+
+    local commands_opt=""
+    if [[ -n "${COMMANDS[@]}" ]]
+    then
+        commands_opt="-c \"${COMMANDS[@]}\""
+    else
+        $CAT <<EOF
+[[ -e /etc/motd ]] && $CAT /etc/motd || { [[ -e /etc/update-motd.d ]] && command -v run-parts &> /dev/null && run-parts /etc/update-motd.d/; }
+EOF
+    fi
+
+    $CAT <<EOF
+echo "${bashrc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/bashrc";
+echo "${zshrc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/.zshrc";
 echo "${inputrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/inputrc";
 echo "${vimrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/vimrc";
 echo "${tmux_conf}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/tmux.conf";
-VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" KYRAT_HOME="\${kyrat_home}" $BASH --rcfile "\${kyrat_home}/bashrc" -i ${commands_opt};
+VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" KYRAT_HOME="\${kyrat_home}" ZDOTDIR="\${kyrat_home}" ${KYRAT_SHELL_CMD} ${commands_opt};
 EOF
 }
