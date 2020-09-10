@@ -250,19 +250,19 @@ function test_get_remote_command_no_gunzip(){
     assertEquals "kyrat requires not-exist command on the remote host. Aborting." "$(cat $STDERRF)"
 }
 
-function test_get_remote_command_no_base_dirs(){
+function test_get_remote_command_no_writable_tmp_dir(){
     echo "bashrc" > $KYRAT_HOME/bashrc
     echo "inputrc" > $KYRAT_HOME/inputrc
     echo "vimrc" > $KYRAT_HOME/vimrc
     echo "zshrc" > $KYRAT_HOME/zshrc
     echo "tmux.conf" > $KYRAT_HOME/tmux.conf
-    BASE_DIRS=("/")
+    KYRAT_TMPDIR="/"
 
     assertCommandSuccess _get_remote_command
     local remote_command="$STDOUTF"
 
     assertCommandFailOnStatus 112 eval "$(cat $remote_command)"
-    assertEquals "Could not find writable temp directory on the remote host. Aborting." "$(cat $STDERRF)"
+    assertEquals "Could not write into temp directory / on the remote host. Set KYRAT_TMPDIR env variable on a writable remote directory. Aborting." "$(cat $STDERRF)"
 }
 
 source $(dirname $0)/../utils/shunit2

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 KYRAT_HOME=${KYRAT_HOME:-${HOME}/.config/kyrat}
+KYRAT_TMPDIR=${KYRAT_TMPDIR:-/tmp}
 KYRAT_SHELL=${KYRAT_SHELL:-bash}
 
 BASE64=base64
@@ -13,8 +14,6 @@ GZIP=gzip
 SSH=ssh
 # PATH needs to be updated since GNU Coreutils is required in OSX environments
 GNUBIN="/usr/local/opt/coreutils/libexec/gnubin"
-
-BASE_DIRS=("/tmp" "\$HOME")
 
 NOT_EXISTING_COMMAND=111
 NO_WRITABLE_DIRECTORY=112
@@ -168,11 +167,10 @@ function _get_remote_command(){
 
     $CAT <<EOF
 [[ -d "$GNUBIN" ]] && PATH="$GNUBIN:\$PATH";
-for tmp_dir in ${BASE_DIRS[@]}; do [[ -w "\$tmp_dir" ]] && { base_dir="\$tmp_dir"; break; } done;
-[[ -z "\$base_dir" ]] && { echo >&2 "Could not find writable temp directory on the remote host. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
+[[ -w "$KYRAT_TMPDIR" ]] || { echo >&2 "Could not write into temp directory $KYRAT_TMPDIR on the remote host. Set KYRAT_TMPDIR env variable on a writable remote directory. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
 command -v $BASE64 >/dev/null 2>&1 || { echo >&2 "kyrat requires $BASE64 command on the remote host. Aborting."; exit $NOT_EXISTING_COMMAND; };
 command -v $GUNZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GUNZIP command on the remote host. Aborting."; exit $NOT_EXISTING_COMMAND; };
-kyrat_home="\$(mktemp -d kyrat-XXXXX -p "\$base_dir")";
+kyrat_home="\$(mktemp -d kyrat-XXXXX -p "$KYRAT_TMPDIR")";
 trap "rm -rf "\$kyrat_home"; exit" EXIT HUP INT QUIT PIPE TERM KILL;
 EOF
 

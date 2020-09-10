@@ -24,7 +24,7 @@ Description
 kyrat is a ssh wrapper that allows to source local dotfiles
 on a ssh session to a remote host.
 No installations or root access on the remote host are required.
-It works either from/to a Linux or OSX machine.
+It works either from/to a Linux or OSX machines.
 
 *kyrat* can transfer to the remote host and source the following dotfiles:
 
@@ -34,19 +34,23 @@ It works either from/to a Linux or OSX machine.
 - **tmux.conf** files (located in either `~/.config/kyrat/tmux.conf` or inside the directory `~/.config/kyrat/tmux.conf.d/`).
 - **zshrc** files (located in either `~/.config/kyrat/zshrc` or inside the directory `~/.config/kyrat/zshrc.d/`).
 
-The environment variable `KYRAT_SHELL` can be used to set which shell to spawn
-remotely. The allowed shells are `bash`, `zsh` and `sh`.
+
+### Environment variables
+
+- `KYRAT_SHELL` can be used to set which shell to spawn remotely (default is `bash`). The allowed shells are `bash`, `zsh` and `sh`.
+- `KYRAT_TMPDIR` remote location to store the dotfiles (default `/tmp`).
+
 
 ### Kyrat features
 The following summarizes the Kyrat features:
 
-- Dotfile types supported: `bash`, `vim`, `inputrc`, `tmux`, `zshrc`
+- Dotfile types supported: `bashrc`, `vimrc`, `inputrc`, `tmux.conf`, `zshrc`
 - Platform: Linux, OSX
 - Compression during tranfer: `gzip`
-- Encoding during transfe: `base64`
-- Automatic removal of remote dotfiles when exiting from Kyrat session: **YES**
-- Remote dotfile location: `/tmp` and fallback to `$HOME`
-- Remote shells available to spawn: `bash`, `zsh`, `sh`
+- Encoding during transfer: `base64`
+- Automatic removal of remote dotfiles when exiting from Kyrat session
+- Remote dotfile location: `/tmp` (configurable via `KYRAT_TMPDIR` env variable)
+- Remote shells available to spawn: `bash`, `zsh` or `sh` (configurable via `KYRAT_SHELL` env variable)
 
 ### How it works?
 
@@ -56,9 +60,9 @@ This is the sequence of steps that occur when running Kyrat:
 - The dotfile blobs are passed through the ssh command line containing a script
 - The remote host will execute such script with the instructions of:
   - how to decode and extract the dotfiles
-  - where to store the dotfiles (inside a directory in `tmp` or `$HOME`)
+  - where to store the dotfiles (according to `KYRAT_TMPDIR` variable)
   - which variable environments to set to make the dotfiles working properly
-  - which remote shell to spawn (`bash`, `zsh` or `sh`)
+  - which remote shell to spawn (`bash`, `zsh` or `sh` according to `KYRAT_SHELL` variable)
 
 Quickstart
 ==========
@@ -175,7 +179,7 @@ Authors
 =======
 Kyrat was originally created in April 2014 by [Filippo Squillace (feel.sqoox@gmail.com)](https://github.com/fsquillace).
 
-Here is a list of [**really appreciated contributors**](https://github.com/fsquillace/junest/graphs/contributors)!
+Here is a list of [**really appreciated contributors**](https://github.com/fsquillace/kyrat/graphs/contributors)!
 
 [![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/0)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/0)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/1)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/1)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/2)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/2)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/3)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/3)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/4)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/4)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/5)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/5)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/6)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/6)[![](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/images/7)](https://sourcerer.io/fame/fsquillace/fsquillace/kyrat/links/7)
 
