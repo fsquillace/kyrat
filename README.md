@@ -61,7 +61,7 @@ This is the sequence of steps that occur when running Kyrat:
 - The remote host will execute such script with the instructions of:
   - how to decode and extract the dotfiles
   - where to store the dotfiles (according to `KYRAT_TMPDIR` variable)
-  - which variable environments to set to make the dotfiles working properly
+  - which environment variables to set to make the dotfiles working properly
   - which remote shell to spawn (`bash`, `zsh` or `sh` according to `KYRAT_SHELL` variable)
 
 Quickstart
