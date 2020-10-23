@@ -5,9 +5,9 @@ KYRAT_TMPDIR=${KYRAT_TMPDIR:-/tmp}
 KYRAT_SHELL=${KYRAT_SHELL:-bash}
 
 BASE64=base64
-BASH=bash
-ZSH=zsh
-SH=sh
+BASH=${KYRAT_BASH:-bash}
+ZSH=${KYRAT_ZSH:-zsh}
+SH=${KYRAT_SH:-sh}
 CAT=cat
 GUNZIP=gunzip
 GZIP=gzip
