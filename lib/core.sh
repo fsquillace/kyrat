@@ -170,7 +170,7 @@ function _get_remote_command(){
 [[ -w "$KYRAT_TMPDIR" ]] || { echo >&2 "Could not write into temp directory $KYRAT_TMPDIR on the remote host. Set KYRAT_TMPDIR env variable on a writable remote directory. Aborting."; exit $NO_WRITABLE_DIRECTORY; };
 command -v $BASE64 >/dev/null 2>&1 || { echo >&2 "kyrat requires $BASE64 command on the remote host. Aborting."; exit $NOT_EXISTING_COMMAND; };
 command -v $GUNZIP >/dev/null 2>&1 || { echo >&2 "kyrat requires $GUNZIP command on the remote host. Aborting."; exit $NOT_EXISTING_COMMAND; };
-kyrat_home="\$(mktemp -d kyrat-XXXXX -p "$KYRAT_TMPDIR")";
+kyrat_home="\$(mktemp -d "$KYRAT_TMPDIR/kyrat-XXXXX")";
 trap "rm -rf "\$kyrat_home"; exit" EXIT HUP INT QUIT PIPE TERM KILL;
 EOF
 
@@ -185,11 +185,11 @@ EOF
     fi
 
     $CAT <<EOF
-echo "${bashrc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/bashrc";
-echo "${zshrc_script}" | $BASE64 -di | $GUNZIP >> "\${kyrat_home}/.zshrc";
-echo "${inputrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/inputrc";
-echo "${vimrc_script}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/vimrc";
-echo "${tmux_conf}" | $BASE64 -di | $GUNZIP > "\${kyrat_home}/tmux.conf";
+echo "${bashrc_script}" | $BASE64 -di - | $GUNZIP >> "\${kyrat_home}/bashrc";
+echo "${zshrc_script}" | $BASE64 -di - | $GUNZIP >> "\${kyrat_home}/.zshrc";
+echo "${inputrc_script}" | $BASE64 -di - | $GUNZIP > "\${kyrat_home}/inputrc";
+echo "${vimrc_script}" | $BASE64 -di - | $GUNZIP > "\${kyrat_home}/vimrc";
+echo "${tmux_conf}" | $BASE64 -di - | $GUNZIP > "\${kyrat_home}/tmux.conf";
 VIMINIT="let \\\$MYVIMRC=\\"\${kyrat_home}/vimrc\\" | source \\\$MYVIMRC" INPUTRC="\${kyrat_home}/inputrc" TMUX_CONF="\${kyrat_home}/tmux.conf" KYRAT_HOME="\${kyrat_home}" ZDOTDIR="\${kyrat_home}" ${KYRAT_SHELL_CMD} ${commands_opt};
 EOF
 }
