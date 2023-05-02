@@ -46,7 +46,7 @@ The following summarizes the Kyrat features:
 
 - Dotfile types supported: `bashrc`, `vimrc`, `inputrc`, `tmux.conf`, `zshrc`
 - Platform: Linux, OSX
-- Compression during tranfer: `gzip`
+- Compression during transfer: `gzip`
 - Encoding during transfer: `base64`
 - Automatic removal of remote dotfiles when exiting from Kyrat session
 - Remote dotfile location: `/tmp` (configurable via `KYRAT_TMPDIR` env variable)
